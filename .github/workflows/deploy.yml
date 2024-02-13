@@ -1,8 +1,8 @@
-name: deploy-dev
+name: deploy
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -22,4 +22,4 @@ jobs:
           port: ${{ secrets.DEV_PORT }}
           script: |
             cd teenybox-server
-            ./bin/deploy.sh
+            ./bin/deploy-prod.sh
