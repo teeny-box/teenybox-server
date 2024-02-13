@@ -22,4 +22,5 @@ jobs:
           port: ${{ secrets.PROD_PORT }}
           script: |
             cd teenybox-server
+            chmod +x ./bin/deploy-prod.sh
             ./bin/deploy-prod.sh
