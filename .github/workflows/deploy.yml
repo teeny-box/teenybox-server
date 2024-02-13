@@ -1,8 +1,8 @@
-name: deploy-dev
+name: deploy
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -16,10 +16,11 @@ jobs:
       - name: SSH Remote Commands
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{secrets.DEV_HOST}}
-          username: ${{secrets.DEV_USER}}
-          key: ${{ secrets.DEV_KEY }}
-          port: ${{ secrets.DEV_PORT }}
+          host: ${{secrets.PROD_HOST}}
+          username: ${{secrets.PROD_USER}}
+          key: ${{ secrets.PROD_KEY }}
+          port: ${{ secrets.PROD_PORT }}
           script: |
             cd teenybox-server
-            ./bin/deploy.sh
+            chmod +x ./bin/deploy-prod.sh
+            ./bin/deploy-prod.sh
