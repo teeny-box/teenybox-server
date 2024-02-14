@@ -20,7 +20,7 @@ class ShowController {
     const match = {};
     let sort;
 
-    if (title) match["title"] = { $regex: title, $options: "i" };
+    if (title) match["title"] = { $regex: title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: "i" };
 
     if (state && typeof state === "string") {
       state = [state];
