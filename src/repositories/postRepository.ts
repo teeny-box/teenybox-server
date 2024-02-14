@@ -163,7 +163,7 @@ class PostRepository {
     skip: number,
     limit: number,
   ): Promise<{ posts: IPost[]; totalCount: number }> {
-    const posts = await PostModel.find(query)
+    let posts = await PostModel.find(query)
       .sort({ post_number: -1 })
       .skip(skip)
       .limit(limit)
@@ -174,6 +174,16 @@ class PostRepository {
       .exec();
 
     const totalCount = await PostModel.countDocuments(query);
+
+    posts = posts.map((post) => ({
+      ...post.toObject(), // Mongoose 문서를 일반 객체로 변환
+      user: {
+        nickname: post.user_id.nickname,
+        profile_url: post.user_id.profile_url,
+        _id: post.user_id._id,
+        state: post.user_id.state,
+      },
+    }));
 
     return { posts, totalCount };
   }

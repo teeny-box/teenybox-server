@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IPost extends Document {
   post_number: number;
-  user_id: mongoose.Schema.Types.ObjectId;
+  user_id: IUser;
   title: string;
   content: string;
   tags?: string[];
@@ -13,6 +13,13 @@ export interface IPost extends Document {
   views: number; // 조회수
   likedUsers: string[]; // 추천한 사용자의 ID 목록
   deletedAt?: Date | null; // 삭제로직 변경을 위한 필드 추가
+}
+
+export interface IUser extends Document {
+  _id: mongoose.Schema.Types.ObjectId;
+  nickname: string;
+  profile_url: string;
+  state: string;
 }
 
 const postSchema = new Schema<IPost>(

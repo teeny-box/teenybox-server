@@ -167,7 +167,7 @@ class promotionRepository {
     skip: number,
     limit: number,
   ): Promise<{ promotions: IPromotion[]; totalCount: number }> {
-    const promotions = await PromotionModel.find(query)
+    let promotions = await PromotionModel.find(query)
       .sort({ promotion_number: -1 })
       .skip(skip)
       .limit(limit)
@@ -178,6 +178,16 @@ class promotionRepository {
       .exec();
 
     const totalCount = await PromotionModel.countDocuments(query);
+
+    promotions = promotions.map((promotion) => ({
+      ...promotion.toObject(), // Mongoose 문서를 일반 객체로 변환
+      user: {
+        nickname: promotion.user_id.nickname,
+        profile_url: promotion.user_id.profile_url,
+        _id: promotion.user_id._id,
+        state: promotion.user_id.state,
+      },
+    }));
 
     return { promotions, totalCount };
   }
