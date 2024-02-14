@@ -15,7 +15,7 @@ class ShowController {
     const lowPrice = req.query.lowPrice as string;
     const highPrice = req.query.highPrice as string;
     const date = req.query.date as string;
-    const location = req.query.location as string;∂
+    const location = req.query.location as string;
 
     const match = {};
     let sort;
