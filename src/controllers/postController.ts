@@ -107,8 +107,8 @@ class PostController {
   async deleteMultiplePosts(req: AuthRequest, res: Response): Promise<void> {
     const user = req.user;
     const postNumbers = req.body.postNumbers;
-    const deletedPosts = await PostService.deleteMany(postNumbers, user);
-    res.status(200).json(deletedPosts);
+    await PostService.deleteMany(postNumbers, user);
+    res.status(200).json({ message: "게시글이 일괄 삭제 되었습니다." });
   }
 
   // 게시글 추천
