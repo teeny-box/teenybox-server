@@ -34,7 +34,7 @@ mongoose
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://dailytopia2.shop"],
+    origin: ["http://localhost:3000", "https://dailytopia2.shop", "https://teeny-box.com"],
     credentials: true,
   }),
 );
