@@ -173,20 +173,24 @@ class PromotionService {
   ): Promise<{ promotions: IPromotion[]; totalCount: number }> {
     const skip = (page - 1) * limit;
 
+    // 특수 문자 이스케이프 함수
+    const escapeRegex = (text: string) =>
+      text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
     let searchQuery;
     if (type === "title") {
       searchQuery = {
-        title: { $regex: query, $options: "i" },
+        title: { $regex: escapeRegex(query), $options: "i" },
         deletedAt: null,
       };
     } else if (type === "tag") {
       searchQuery = {
-        tags: { $regex: query, $options: "i" },
+        tags: { $regex: escapeRegex(query), $options: "i" },
         deletedAt: null,
       };
     } else if (type === "play_title") {
       searchQuery = {
-        play_title: { $regex: query, $options: "i" },
+        play_title: { $regex: escapeRegex(query), $options: "i" },
         deletedAt: null,
       };
     } else {

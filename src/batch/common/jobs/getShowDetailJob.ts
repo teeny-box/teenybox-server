@@ -10,20 +10,38 @@ function convertToDate(dateStr: string) {
 
 function parsePrice(priceStr: string) {
   if (priceStr === "전석무료" || priceStr === "" || !priceStr) return { minPrice: 0, maxPrice: 0 };
-  const priceStrWithoutString = priceStr.replace(/\D/g, "");
 
-  const priceChunks = priceStrWithoutString.match(/.{1,5}/g) || [];
-  const parsedPrices = priceChunks.map((chunk: string) => parseInt(chunk));
+  const extractedNumbers = priceStr.match(/\d{1,3}(?:,\d{3})*(?:\.\d+)?/g); // 숫자만 추출 (콤마가 포함된 경우도 처리)
+  if (!extractedNumbers) return { minPrice: 0, maxPrice: 0 }; // 숫자가 없는 경우
 
-  if (parsedPrices && parsedPrices.length < 2) {
-    const price = parsedPrices[0]
-    return { minPrice: price, maxPrice: price };
-  } else if (parsedPrices && parsedPrices.length > 1) {
-    const maxPrice = Math.max(...parsedPrices)
-    const minPrice = Math.min(...parsedPrices)
-    return { minPrice, maxPrice };
-  }
+  const parsedPrices = extractedNumbers.map((numStr: string) => {
+    // 콤마 제거 후 정수로 변환
+    const numWithoutCommas = numStr.replace(/,/g, '');
+    return parseInt(numWithoutCommas);
+  });
+
+  const maxPrice = Math.max(...parsedPrices); // 최대값 계산
+  const minPrice = Math.min(...parsedPrices); // 최소값 계산
+
+  return { minPrice, maxPrice };
 }
+
+// function parsePrice(priceStr: string) {
+//   if (priceStr === "전석무료" || priceStr === "" || !priceStr) return { minPrice: 0, maxPrice: 0 };
+//   const priceStrWithoutString = priceStr.replace(/\D/g, "");
+//
+//   const priceChunks = priceStrWithoutString.match(/.{1,5}/g) || [];
+//   const parsedPrices = priceChunks.map((chunk: string) => parseInt(chunk));
+//
+//   if (parsedPrices && parsedPrices.length < 2) {
+//     const price = parsedPrices[0]
+//     return { minPrice: price, maxPrice: price };
+//   } else if (parsedPrices && parsedPrices.length > 1) {
+//     const maxPrice = Math.max(...parsedPrices)
+//     const minPrice = Math.min(...parsedPrices)
+//     return { minPrice, maxPrice };
+//   }
+// }
 
 function parseShowData(
   xmlData: string,

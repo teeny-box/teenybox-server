@@ -20,7 +20,7 @@ class ShowController {
     const match = {};
     let sort;
 
-    if (title) match["title"] = { $regex: title, $options: "i" };
+    if (title) match["title"] = { $regex: title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: "i" };
 
     if (state && typeof state === "string") {
       state = [state];
@@ -37,10 +37,14 @@ class ShowController {
     }
 
     if (lowPrice || highPrice) {
-      match["max_price"] = {};
-      match["min_price"] = {};
-      if (lowPrice) match["min_price"].$gte = +lowPrice;
-      if (highPrice) match["max_price"].$lte = +highPrice;
+      if (lowPrice) {
+        match["min_price"] = {};
+        match["min_price"].$gte = +lowPrice;
+      }
+      if (highPrice) {
+        match["max_price"] = {};
+        match["max_price"].$lte = +highPrice;
+      }
     }
 
     if (date) {
@@ -57,10 +61,7 @@ class ShowController {
           sort = { start_date: -1 };
           break;
         case ShowOrder.HIGH_RATE:
-          sort = { avg_rating: -1 };
-          break;
-        case ShowOrder.LOW_PRICE:
-          sort = { price_number: 1 };
+          sort = { avg_rating: -1, start_date: -1 };
           break;
       }
     }

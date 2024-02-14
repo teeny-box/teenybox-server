@@ -39,7 +39,7 @@ class PromotionController {
   async getAllPromotions(req: Request, res: Response): Promise<void> {
     try {
       const page = Number(req.query.page || 1);
-      const limit = Number(req.query.limit || 10);
+      const limit = Number(req.query.limit || -1);
       const sortBy = String(req.query.sortBy) || "promotion_number";
       const sortOrder = String(req.query.sortOrder) === "desc" ? "desc" : "asc";
       const category = String(req.query.category);
@@ -130,11 +130,8 @@ class PromotionController {
   ): Promise<void> {
     const user = req.user;
     const promotionNumbers = req.body.promotionNumbers;
-    const deletedPromotions = await PromotionService.deleteMany(
-      promotionNumbers,
-      user,
-    );
-    res.status(200).json(deletedPromotions);
+    await PromotionService.deleteMany(promotionNumbers, user);
+    res.status(200).json({ message: "게시글이 일괄 삭제 되었습니다." });
   }
 
   // 게시글 추천

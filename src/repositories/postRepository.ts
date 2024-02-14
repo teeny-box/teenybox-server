@@ -98,7 +98,7 @@ class PostRepository {
       },
       sortStage,
       { $skip: skip },
-      { $limit: limit },
+      { $limit: limit === -1 ? Number.MAX_SAFE_INTEGER : limit }, // limit이 -1이면 모든 문서를 반환하도록 설정
     ]).exec();
 
     // MongoDB 집계 결과를 명시적으로 타입 변환
@@ -163,7 +163,7 @@ class PostRepository {
     skip: number,
     limit: number,
   ): Promise<{ posts: IPost[]; totalCount: number }> {
-    const posts = await PostModel.find(query)
+    let posts = await PostModel.find(query)
       .sort({ post_number: -1 })
       .skip(skip)
       .limit(limit)
@@ -174,6 +174,16 @@ class PostRepository {
       .exec();
 
     const totalCount = await PostModel.countDocuments(query);
+
+    posts = posts.map((post) => ({
+      ...post.toObject(), // Mongoose 문서를 일반 객체로 변환
+      user: {
+        nickname: post.user_id.nickname,
+        profile_url: post.user_id.profile_url,
+        _id: post.user_id._id,
+        state: post.user_id.state,
+      },
+    }));
 
     return { posts, totalCount };
   }
