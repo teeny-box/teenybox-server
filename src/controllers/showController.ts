@@ -15,7 +15,7 @@ class ShowController {
     const lowPrice = req.query.lowPrice as string;
     const highPrice = req.query.highPrice as string;
     const date = req.query.date as string;
-    const location = req.query.location as string;
+    const location = req.query.location as string;∂
 
     const match = {};
     let sort;
@@ -61,10 +61,7 @@ class ShowController {
           sort = { start_date: -1 };
           break;
         case ShowOrder.HIGH_RATE:
-          sort = { avg_rating: -1 };
-          break;
-        case ShowOrder.LOW_PRICE:
-          sort = { price_number: 1 };
+          sort = { avg_rating: -1, start_date: -1 };
           break;
       }
     }

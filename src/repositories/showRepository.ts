@@ -26,6 +26,7 @@ class showRepository {
   }
 
   async findShows(match: object, sort, page?: number, limit?: number) {
+    console.log(page, limit)
     const shows = await ShowModel.aggregate([
       { $match: match },
       { $sort: sort },
