@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, MaxLength, IsOptional } from "class-validator";
+import {
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  IsOptional,
+  IsEnum,
+} from "class-validator";
 
 // 게시글 생성을 위한 DTO
 export class CreatePostDTO {
@@ -15,6 +21,9 @@ export class CreatePostDTO {
 
   @IsOptional()
   tags?: string[] | string;
+
+  @IsEnum({ 0: 0, 1: 1 }, { message: "일반 게시글 : 0, 고정 게시글 : 1" })
+  is_fixed;
 }
 
 // 게시글 수정을 위한 DTO
@@ -30,4 +39,7 @@ export class UpdatePostDTO {
 
   @IsOptional()
   tags?: string[] | string;
+
+  @IsEnum({ 0: 0, 1: 1 }, { message: "일반 게시글 : 0, 고정 게시글 : 1" })
+  is_fixed;
 }

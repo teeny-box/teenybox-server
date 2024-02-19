@@ -497,6 +497,9 @@ export default router;
  *           items:
  *             type: string
  *           description: 게시글에 사용될 태그 배열
+ *         is_fixed:
+ *           type: integer
+ *           description: 0은 일반게시글, 1은 고정게시글
  *     UpdatePostRequest:
  *       type: object
  *       properties:
@@ -512,6 +515,9 @@ export default router;
  *           items:
  *             type: string
  *           description: 게시글에 사용될 태그 배열
+ *         is_fixed:
+ *           type: integer
+ *           description: 0은 일반게시글, 1은 고정게시글
  *     PostResponse:
  *       type: object
  *       properties:

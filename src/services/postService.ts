@@ -29,6 +29,10 @@ class PostService {
         throw new NotFoundError("사용자를 찾을 수 없습니다.");
       }
 
+      if (user.role === "user") {
+        postData.is_fixed = 0;
+      }
+
       // 게시글 데이터에 사용자 ID와 닉네임 추가
       const postDataWithUser = {
         ...postData,
@@ -59,6 +63,17 @@ class PostService {
 
     if (post.user_id["_id"].toString() !== userId.toString()) {
       throw new UnauthorizedError("게시글 수정 권한이 없습니다.");
+    }
+
+    const user = await UserModel.findOne({ _id: userId });
+
+    if (user.role === "user") {
+      if (updateData.is_fixed == 1) {
+        throw new UnauthorizedError(
+          "일반 사용자는 게시글을 고정할 수 없습니다.",
+        );
+      }
+      updateData.is_fixed = 0;
     }
 
     // 게시글 업데이트
