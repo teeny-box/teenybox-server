@@ -31,12 +31,12 @@ class PostService {
       }
 
       if (user.role === "user") {
-        if (postData.is_fixed == 1) {
+        if (postData.is_fixed === "고정") {
           throw new UnauthorizedError(
             "일반 사용자는 게시글을 고정할 수 없습니다.",
           );
         }
-        postData.is_fixed = 0;
+        postData.is_fixed = "일반";
       }
 
       // 게시글 데이터에 사용자 ID와 닉네임 추가
@@ -74,12 +74,12 @@ class PostService {
     const user = await UserModel.findOne({ _id: userId });
 
     if (user.role === "user") {
-      if (updateData.is_fixed == 1) {
+      if (updateData.is_fixed === "고정") {
         throw new UnauthorizedError(
           "일반 사용자는 게시글을 고정할 수 없습니다.",
         );
       }
-      updateData.is_fixed = 0;
+      updateData.is_fixed = "일반";
     }
 
     // 게시글 업데이트
@@ -93,7 +93,7 @@ class PostService {
     limit: number,
     sortBy: string, // 정렬 기준
     sortOrder: "asc" | "desc", // 정렬 순서
-    is_fixed: number,
+    is_fixed: string,
   ): Promise<{
     posts: Array<IPost & { commentsCount: number }>;
     totalCount: number;
@@ -102,12 +102,10 @@ class PostService {
 
     const filter: FilterQuery<IPost> = {}; // 필터 타입 지정
 
-    if (is_fixed == null) {
-      filter.is_fixed = null;
-    } else {
+    // 카테고리 값에 따라 필터 설정
+    if (is_fixed && (is_fixed === "고정" || is_fixed === "일반")) {
       filter.is_fixed = is_fixed;
     }
-
     filter.deletedAt = null;
 
     return await PostRepository.findAll(skip, limit, sortBy, sortOrder, filter);
