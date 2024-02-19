@@ -36,8 +36,15 @@ class PostController {
     const limit = Number(req.query.limit || -1);
     const sortBy = String(req.query.sortBy) || "post_number";
     const sortOrder = String(req.query.sortOrder) === "desc" ? "desc" : "asc";
+    const is_fixed = String(req.query.isFixed);
 
-    const posts = await PostService.getAllPosts(page, limit, sortBy, sortOrder);
+    const posts = await PostService.getAllPosts(
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+      is_fixed,
+    );
     res.status(200).json(posts);
   }
 

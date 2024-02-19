@@ -151,6 +151,12 @@ export default router;
  *           type: string
  *           default: desc
  *           description: asc = 오름차순, desc = 내림차순
+ *       - in: query
+ *         name: isFixed
+ *         schema:
+ *           type: string
+ *           default: 일반게시글, 고정게시글 구분 없음
+ *           description: 일반또는 고정 입력
  *     responses:
  *       '200':
  *         description: 게시물 목록
@@ -497,6 +503,10 @@ export default router;
  *           items:
  *             type: string
  *           description: 게시글에 사용될 태그 배열
+ *         is_fixed:
+ *           type: string
+ *           enum: ["일반", "고정"]
+ *           description: 게시글 고정 여부
  *     UpdatePostRequest:
  *       type: object
  *       properties:
@@ -512,6 +522,10 @@ export default router;
  *           items:
  *             type: string
  *           description: 게시글에 사용될 태그 배열
+ *         is_fixed:
+ *           type: string
+ *           enum: ["고정", "일반"]
+ *           description: 게시글 고정 여부
  *     PostResponse:
  *       type: object
  *       properties:

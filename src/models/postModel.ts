@@ -13,6 +13,7 @@ export interface IPost extends Document {
   views: number; // 조회수
   likedUsers: string[]; // 추천한 사용자의 ID 목록
   deletedAt?: Date | null; // 삭제로직 변경을 위한 필드 추가
+  is_fixed: "고정" | "일반";
 }
 
 export interface IUser extends Document {
@@ -66,6 +67,11 @@ const postSchema = new Schema<IPost>(
     deletedAt: {
       type: Date,
       default: null,
+    },
+    is_fixed: {
+      type: String,
+      enum: ["고정", "일반"],
+      required: true,
     },
   },
   {

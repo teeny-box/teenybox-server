@@ -8,6 +8,7 @@ import { UserModel } from "../models/userModel";
 import { IUser } from "../models/userModel";
 import { ROLE } from "../common/enum/enum";
 import commentService from "./commentService";
+import { FilterQuery } from "mongoose";
 
 class PostService {
   // 게시글 생성
@@ -27,6 +28,15 @@ class PostService {
       const user = await UserModel.findOne({ _id: userId });
       if (!user) {
         throw new NotFoundError("사용자를 찾을 수 없습니다.");
+      }
+
+      if (user.role === "user") {
+        if (postData.is_fixed === "고정") {
+          throw new UnauthorizedError(
+            "일반 사용자는 게시글을 고정할 수 없습니다.",
+          );
+        }
+        postData.is_fixed = "일반";
       }
 
       // 게시글 데이터에 사용자 ID와 닉네임 추가
@@ -61,6 +71,17 @@ class PostService {
       throw new UnauthorizedError("게시글 수정 권한이 없습니다.");
     }
 
+    const user = await UserModel.findOne({ _id: userId });
+
+    if (user.role === "user") {
+      if (updateData.is_fixed === "고정") {
+        throw new UnauthorizedError(
+          "일반 사용자는 게시글을 고정할 수 없습니다.",
+        );
+      }
+      updateData.is_fixed = "일반";
+    }
+
     // 게시글 업데이트
     const updatedPost = await PostRepository.update(post_number, updateData);
     return updatedPost;
@@ -72,13 +93,21 @@ class PostService {
     limit: number,
     sortBy: string, // 정렬 기준
     sortOrder: "asc" | "desc", // 정렬 순서
+    is_fixed: string,
   ): Promise<{
     posts: Array<IPost & { commentsCount: number }>;
     totalCount: number;
   }> {
     const skip = (page - 1) * limit;
 
-    return await PostRepository.findAll(skip, limit, sortBy, sortOrder);
+    const filter: FilterQuery<IPost> = {}; // 필터 타입 지정
+
+    if (is_fixed && (is_fixed === "고정" || is_fixed === "일반")) {
+      filter.is_fixed = is_fixed;
+    }
+    filter.deletedAt = null;
+
+    return await PostRepository.findAll(skip, limit, sortBy, sortOrder, filter);
   }
 
   // 게시글 번호로 조회
