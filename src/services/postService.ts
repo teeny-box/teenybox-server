@@ -8,6 +8,7 @@ import { UserModel } from "../models/userModel";
 import { IUser } from "../models/userModel";
 import { ROLE } from "../common/enum/enum";
 import commentService from "./commentService";
+import { FilterQuery } from "mongoose";
 
 class PostService {
   // 게시글 생성
@@ -30,6 +31,11 @@ class PostService {
       }
 
       if (user.role === "user") {
+        if (postData.is_fixed == 1) {
+          throw new UnauthorizedError(
+            "일반 사용자는 게시글을 고정할 수 없습니다.",
+          );
+        }
         postData.is_fixed = 0;
       }
 
@@ -87,13 +93,24 @@ class PostService {
     limit: number,
     sortBy: string, // 정렬 기준
     sortOrder: "asc" | "desc", // 정렬 순서
+    is_fixed: number,
   ): Promise<{
     posts: Array<IPost & { commentsCount: number }>;
     totalCount: number;
   }> {
     const skip = (page - 1) * limit;
 
-    return await PostRepository.findAll(skip, limit, sortBy, sortOrder);
+    const filter: FilterQuery<IPost> = {}; // 필터 타입 지정
+
+    if (is_fixed == null) {
+      filter.is_fixed = null;
+    } else {
+      filter.is_fixed = is_fixed;
+    }
+
+    filter.deletedAt = null;
+
+    return await PostRepository.findAll(skip, limit, sortBy, sortOrder, filter);
   }
 
   // 게시글 번호로 조회

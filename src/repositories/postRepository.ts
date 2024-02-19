@@ -1,5 +1,6 @@
 import PostModel, { IPost } from "../models/postModel";
 import { CreatePostDTO, UpdatePostDTO } from "../dtos/postDto";
+import { FilterQuery } from "mongoose";
 
 class PostRepository {
   // 게시글 생성
@@ -37,6 +38,7 @@ class PostRepository {
     limit: number,
     sortBy: string,
     sortOrder: "asc" | "desc", // 추가된 부분: 정렬 순서
+    filter: FilterQuery<IPost>,
   ): Promise<{
     posts: Array<
       IPost & {
@@ -46,7 +48,7 @@ class PostRepository {
     >;
     totalCount: number;
   }> {
-    const totalCount = await PostModel.countDocuments({ deletedAt: null });
+    const totalCount = await PostModel.countDocuments(filter);
 
     let sortStage;
     if (sortBy !== "post_number") {
@@ -96,6 +98,7 @@ class PostRepository {
           comments: 0,
         },
       },
+      { $match: filter },
       sortStage,
       { $skip: skip },
       { $limit: limit === -1 ? Number.MAX_SAFE_INTEGER : limit }, // limit이 -1이면 모든 문서를 반환하도록 설정

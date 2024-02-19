@@ -151,6 +151,12 @@ export default router;
  *           type: string
  *           default: desc
  *           description: asc = 오름차순, desc = 내림차순
+ *       - in: query
+ *         name: isFixed
+ *         schema:
+ *           type: integer
+ *           default: null
+ *           description: null or 0 or 1
  *     responses:
  *       '200':
  *         description: 게시물 목록
