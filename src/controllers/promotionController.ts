@@ -43,6 +43,7 @@ class PromotionController {
       const sortBy = String(req.query.sortBy) || "promotion_number";
       const sortOrder = String(req.query.sortOrder) === "desc" ? "desc" : "asc";
       const category = String(req.query.category);
+      const is_fixed = String(req.query.is_fixed);
 
       const promotions = await PromotionService.getAllPromotions(
         page,
@@ -50,6 +51,7 @@ class PromotionController {
         sortBy,
         sortOrder,
         category,
+        is_fixed,
       );
       res.status(200).json(promotions);
     } catch (error) {

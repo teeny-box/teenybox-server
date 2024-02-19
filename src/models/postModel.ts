@@ -70,7 +70,7 @@ const postSchema = new Schema<IPost>(
     },
     is_fixed: {
       type: String,
-      enum: ["고정", "일반"], // 1 : 고정됨
+      enum: ["고정", "일반"],
       required: true,
     },
   },

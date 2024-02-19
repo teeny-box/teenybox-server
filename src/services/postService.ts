@@ -102,7 +102,6 @@ class PostService {
 
     const filter: FilterQuery<IPost> = {}; // 필터 타입 지정
 
-    // 카테고리 값에 따라 필터 설정
     if (is_fixed && (is_fixed === "고정" || is_fixed === "일반")) {
       filter.is_fixed = is_fixed;
     }

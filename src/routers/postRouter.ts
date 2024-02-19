@@ -156,7 +156,7 @@ export default router;
  *         schema:
  *           type: string
  *           default: 일반게시글, 고정게시글 구분 없음
- *           description: 일반 또는 고정 입력
+ *           description: 일반또는 고정 입력
  *     responses:
  *       '200':
  *         description: 게시물 목록
