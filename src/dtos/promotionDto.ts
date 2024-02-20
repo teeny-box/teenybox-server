@@ -41,10 +41,10 @@ export class CreatePromotionDTO {
   end_date!: Date;
 
   @IsEnum(
-    { 연극: "연극", 기타: "기타" },
-    { message: "카테고리는 '연극' 또는 '기타' 여야 합니다." },
+    { 연극: "연극", 기타: "기타", 공지: "공지" },
+    { message: "카테고리는 연극, 기타, 공지중에 선택하세요." },
   )
-  category!: "연극" | "기타";
+  category!: "연극" | "기타" | "공지";
 
   @IsEnum(
     { 일반: "일반", 고정: "고정" },
@@ -98,10 +98,10 @@ export class UpdatePromotionDTO {
 
   @IsOptional()
   @IsEnum(
-    { 연극: "연극", 기타: "기타" },
-    { message: "유효한 카테고리를 입력해야 합니다." },
+    { 연극: "연극", 기타: "기타", 공지: "공지" },
+    { message: "카테고리는 연극, 기타, 공지중에 선택하세요." },
   )
-  category?: "연극" | "기타";
+  category?: "연극" | "기타" | "공지";
 
   @IsOptional()
   @IsEnum(
