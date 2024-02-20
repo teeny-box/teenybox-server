@@ -110,8 +110,8 @@ export default router;
  *           description: 상영 종료일
  *         category:
  *           type: string
- *           enum: ["연극", "기타"]
- *           description: 홍보게시글의 카테고리 ("연극" 또는 "기타")
+ *           enum: ["연극", "기타", "공지"]
+ *           description: 홍보게시글의 카테고리 ("연극", "기타", "공지" 중에서 한가지 선택)
  *         is_fixed:
  *           type: string
  *           enum: ["일반", "고정"]
@@ -177,7 +177,7 @@ export default router;
  *           schema:
  *             type: string
  *             default: 필터없음
- *             description: 연극또는 기타 입력
+ *             description: 연극, 기타, 공지 중에서 한가지 입력
  *         - in: query
  *           name: is_fixed
  *           schema:

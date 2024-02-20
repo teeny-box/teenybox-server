@@ -36,9 +36,12 @@ class PromotionService {
       }
 
       if (user.role === "user") {
-        if (promotionData.is_fixed === "고정") {
+        if (
+          promotionData.is_fixed === "고정" ||
+          promotionData.category === "공지"
+        ) {
           throw new UnauthorizedError(
-            "일반 사용자는 게시글을 고정할 수 없습니다.",
+            "일반 사용자는 게시글을 공지게시글 및 고정게시글을 작성할 수 없습니다.",
           );
         }
         promotionData.is_fixed = "일반";
@@ -113,7 +116,10 @@ class PromotionService {
     const skip = (page - 1) * limit;
     const filter: FilterQuery<IPromotion> = {}; // 필터 타입 지정
 
-    if (category && (category === "연극" || category === "기타")) {
+    if (
+      category &&
+      (category === "연극" || category === "기타" || category === "공지")
+    ) {
       filter.category = category;
     }
     if (is_fixed && (is_fixed === "고정" || is_fixed === "일반")) {
