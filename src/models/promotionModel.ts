@@ -15,12 +15,13 @@ export interface IPromotion extends Document {
   likes: number;
   views: number;
   likedUsers: string[];
-  category: "연극" | "기타"; // 카테고리 필드 추가
-  play_title?: string; // 연극제목 필드 추가
-  runtime?: number; // 런타임 필드 추가
-  location?: string; // 장소 필드 추가
-  host?: string; // 주최 필드 추가
-  deletedAt?: Date | null; // 삭제로직 변경을 위한 필드 추가
+  category: "연극" | "기타" | "공지";
+  is_fixed: "일반" | "고정";
+  play_title?: string;
+  runtime?: number;
+  location?: string;
+  host?: string;
+  deletedAt?: Date | null;
 }
 export interface IUser extends Document {
   _id: mongoose.Schema.Types.ObjectId;
@@ -80,7 +81,12 @@ const promotionSchema = new Schema<IPromotion>(
     },
     category: {
       type: String,
-      enum: ["연극", "기타"],
+      enum: ["연극", "기타", "공지"],
+      required: true,
+    },
+    is_fixed: {
+      type: String,
+      enum: ["일반", "고정"],
       required: true,
     },
     play_title: {
