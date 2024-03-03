@@ -32,6 +32,12 @@
 
 <br/>
 
+## 📄 ERD
+
+![TeenyBox_erd](https://github.com/teeny-box/teenybox-server/assets/122986061/948c12bd-b3ec-4ad7-8cf2-7adcc9d9f45d)
+
+<br/>
+
 ## 🛠 기술 스택
 
 ### Front-end
