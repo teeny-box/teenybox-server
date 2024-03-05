@@ -92,7 +92,7 @@ class PostService {
     page: number,
     limit: number,
     sortBy: string, // 정렬 기준
-    sortOrder: "asc" | "desc", // 정렬 순서
+    sortOrder: "asc" | "desc", // 정렬 순서 오름순 내림순
     is_fixed: string,
   ): Promise<{
     posts: Array<IPost & { commentsCount: number }>;
