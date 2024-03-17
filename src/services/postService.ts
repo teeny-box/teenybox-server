@@ -123,7 +123,6 @@ class PostService {
       await post.save(); // 변경된 조회수 저장
     }
 
-    console.log(post.views);
     return post;
   }
 
