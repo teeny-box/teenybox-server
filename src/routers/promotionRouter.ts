@@ -226,6 +226,12 @@ export default router;
  *           schema:
  *             type: number
  *             description: 조회할 홍보게시글의 번호
+ *         - in: query
+ *           name: usage
+ *           schema:
+ *            type: string
+ *            default: view
+ *            description: 수정을 위해서는 fix 등의 값을 사용. (뭘 넣어도 상관은 없음)
  *       responses:
  *         '200':
  *           description: 특정 홍보게시글 반환
