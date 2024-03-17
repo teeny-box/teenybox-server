@@ -248,6 +248,12 @@ export default router;
  *         schema:
  *           type: integer
  *           description: 조회할 게시물 번호
+ *       - in: query
+ *         name: usage
+ *         schema:
+ *           type: string
+ *           default: view (단순 조회)
+ *           description: 수정을 위해서는 fix 등의 값을 사용. (뭘 넣어도 상관은 없음)
  *     responses:
  *       '200':
  *         description: 게시물 조회 성공

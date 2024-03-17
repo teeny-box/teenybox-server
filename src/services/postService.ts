@@ -111,16 +111,19 @@ class PostService {
   }
 
   // 게시글 번호로 조회
-  async findByPostNumber(postNumber: number): Promise<IPost> {
+  async findByPostNumber(postNumber: number, usage: string): Promise<IPost> {
     const post = await PostRepository.findByPostNumber(postNumber);
     if (!post || post.deletedAt != null) {
       throw new NotFoundError("게시글을 찾을 수 없습니다.");
     }
 
-    // 조회수 증가 로직 추가
-    post.views = (post.views || 0) + 1;
-    await post.save(); // 변경된 조회수 저장
+    if (usage === "view") {
+      // 조회수 증가 로직 추가
+      post.views = (post.views || 0) + 1;
+      await post.save(); // 변경된 조회수 저장
+    }
 
+    console.log(post.views);
     return post;
   }
 
