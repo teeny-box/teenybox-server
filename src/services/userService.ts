@@ -9,6 +9,7 @@ import {
   generateRefreshToken,
 } from "../common/utils/tokenUtils";
 import { deleteImagesFromS3 } from "../common/utils/awsS3Utils";
+import { STATE } from "../common/enum/user-state.enum";
 
 export class UserService {
   // 회원가입
@@ -27,8 +28,8 @@ export class UserService {
     if (existingUser) {
       if (
         user &&
-        user.state === "탈퇴" &&
-        user.nickname === existingUser.nickname
+        user.state === STATE.WITHDRAWN &&
+        user.id === existingUser.id
       ) {
         return true; // 탈퇴한 사용자는 기존 닉네임 사용 가능
       }
@@ -49,7 +50,7 @@ export class UserService {
     const user = await UserRepository.getUserById(kakaoUserData.id);
 
     if (user) {
-      if (user.state === "탈퇴") {
+      if (user.state === STATE.WITHDRAWN) {
         return {
           user: null,
           token: null,
@@ -122,7 +123,7 @@ export class UserService {
     const user = await UserRepository.getUserById(naverUserData.id);
 
     if (user) {
-      if (user.state === "탈퇴") {
+      if (user.state === STATE.WITHDRAWN) {
         return {
           user: null,
           token: null,
@@ -201,7 +202,7 @@ export class UserService {
     const user = await UserRepository.getUserById(googleUserData.id);
 
     if (user) {
-      if (user.state === "탈퇴") {
+      if (user.state === STATE.WITHDRAWN) {
         return {
           user: null,
           token: null,

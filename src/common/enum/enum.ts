@@ -44,19 +44,3 @@ export enum REGION_NAME {
 
 export type StatusType = Union<typeof STATUS>;
 export type RegionType = keyof typeof REGION_NAME;
-
-export const ROLE = {
-  USER: "user",
-  ADMIN: "admin",
-} as const;
-
-export const STATE = {
-  JOINED: "가입",
-  WITHDRAWN: "탈퇴",
-} as const;
-
-export const SOCIAL = {
-  KAKAO: "kakao",
-  NAVER: "naver",
-  GOOGLE: "google",
-} as const;
