@@ -6,7 +6,7 @@ import UnauthorizedError from "../common/error/UnauthorizedError";
 import InternalServerError from "../common/error/InternalServerError";
 import { UserModel } from "../models/userModel";
 import { IUser } from "../models/userModel";
-import { ROLE } from "../common/enum/enum";
+import { ROLE } from "../common/enum/user-role.enum";
 import commentService from "./commentService";
 import { FilterQuery } from "mongoose";
 import CustomError from "../common/error/CustomError";

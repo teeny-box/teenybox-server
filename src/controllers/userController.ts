@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { UserRequestDTO, UserResponseDTO } from "./../dtos/userDto";
 import UserService from "../services/userService";
 import { AuthRequest } from "../middlewares/authUserMiddlewares";
+import { SOCIAL } from "../common/enum/user-social-provider.enum";
 
 class UserController {
   async RegisterUser(req: Request, res: Response) {
@@ -36,7 +37,7 @@ class UserController {
       return res.status(302).json({
         message: "회원가입이 필요합니다.",
         kakaoUserData,
-        social_provider: "kakao",
+        social_provider: SOCIAL.KAKAO,
       });
     }
   }
@@ -61,7 +62,7 @@ class UserController {
       return res.status(302).json({
         message: "회원가입이 필요합니다.",
         naverUserData,
-        social_provider: "naver",
+        social_provider: SOCIAL.NAVER,
       });
     }
   }
@@ -86,7 +87,7 @@ class UserController {
       return res.status(302).json({
         message: "회원가입이 필요합니다.",
         googleUserData,
-        social_provider: "google",
+        social_provider: SOCIAL.GOOGLE,
       });
     }
   }

@@ -1,14 +1,16 @@
 import { UserModel, IUser } from "../models/userModel";
 import { ShowModel } from "../models/showModel";
 import { UserRequestDTO } from "../dtos/userDto";
+import { ROLE } from "../common/enum/user-role.enum";
+import { STATE } from "../common/enum/user-state.enum";
 
 class UserRepository {
   // 사용자 생성
   async createUser(userData: UserRequestDTO): Promise<void> {
     const createUserData = {
       ...userData,
-      role: "user",
-      state: "가입",
+      role: ROLE.USER,
+      state: STATE.JOINED,
     };
 
     const existingUser = await UserModel.findOne({ user_id: userData.user_id });
@@ -43,7 +45,7 @@ class UserRepository {
   // 회원정보 삭제 (state '탈퇴'로 변경, 탈퇴일 추가)
   async deleteUser(userId: string): Promise<void> {
     return await UserModel.findByIdAndUpdate(userId, {
-      state: "탈퇴",
+      state: STATE.WITHDRAWN,
       deletedAt: new Date(),
     });
   }
@@ -130,7 +132,7 @@ class UserRepository {
         const user = await UserModel.findById(userId);
         if (user) {
           await UserModel.findByIdAndUpdate(userId, {
-            state: "탈퇴",
+            state: STATE.WITHDRAWN,
             deletedAt: new Date(),
           });
         }
