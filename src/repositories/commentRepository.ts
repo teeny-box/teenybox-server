@@ -2,7 +2,7 @@ import CommentModel, { IComment } from "../models/commentModel";
 import { CreateCommentDTO, UpdateCommentDTO } from "../dtos/commentDto";
 import NotFoundError from "../common/error/NotFoundError";
 import BadRequestError from "../common/error/BadRequestError";
-import { STATE } from "../common/enum/enum";
+import { STATE } from "../common/enum/user-state.enum";
 
 export class CommentRepository {
   // 댓글 생성

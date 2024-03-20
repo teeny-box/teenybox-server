@@ -7,7 +7,7 @@ import UnauthorizedError from "../common/error/UnauthorizedError";
 import { UserModel } from "../models/userModel";
 import { IUser } from "../models/userModel";
 import { FilterQuery } from "mongoose";
-import { ROLE } from "../common/enum/enum";
+import { ROLE } from "../common/enum/user-role.enum";
 import commentService from "./commentService";
 
 class PromotionService {

@@ -3,6 +3,7 @@ import { generateToken, findByToken } from "../common/utils/tokenUtils";
 import ForbiddenError from "../common/error/ForbiddenError";
 import UnauthorizedError from "../common/error/UnauthorizedError";
 import { IUser } from "../models/userModel";
+import { ROLE } from "../common/enum/user-role.enum";
 
 // 사용자 정의 속성을 추가한 요청 객체 타입 확장
 export interface AuthRequest extends Request {
@@ -89,7 +90,7 @@ export const authenticateAdmin = async (
       req.user = foundUser;
     }
     // 관리자 검증
-    if (foundUser.role !== "admin") {
+    if (foundUser.role !== ROLE.ADMIN) {
       throw new ForbiddenError("관리자 권한이 필요합니다.");
     }
     next();
