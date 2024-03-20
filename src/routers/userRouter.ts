@@ -657,6 +657,35 @@ const router = express.Router();
  */
 /**
  * @swagger
+ * /users/admin/users/{userId}:
+ *   patch:
+ *     tags: [user]
+ *     summary: 유저 권한 변경(관리자 페이지)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               newRole:
+ *                 type: string
+ *                 description: admin / user
+ *                 example: "admin"
+ *     responses:
+ *       200:
+ *         description: 유저 권한 변경 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "유저 권한이 변경되었습니다."
+ */
+/**
+ * @swagger
  * /users/admin/users:
  *   delete:
  *     tags: [user]
@@ -731,6 +760,11 @@ router.get(
   "/admin/users",
   authenticateAdmin,
   asyncHandler(UserController.getAllUsers),
+);
+router.patch(
+  "/admin/users/:userId",
+  authenticateAdmin,
+  asyncHandler(UserController.changeUserRole),
 );
 router.delete(
   "/admin/users",
