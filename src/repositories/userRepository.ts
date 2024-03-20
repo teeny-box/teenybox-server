@@ -109,7 +109,9 @@ class UserRepository {
     });
   }
 
-  // 전체 회원 목록 조회(관리자 페이지)
+  /* 관리자 페이지 */
+
+  // 전체 회원 목록 조회
   async getUsers(
     skip: number,
     limit: number,
@@ -125,7 +127,14 @@ class UserRepository {
     return { users, totalUsers };
   }
 
-  // 선택한 회원 탈퇴(관리자 페이지)
+  // 유저 권한 변경
+  async changeUserRole(user: IUser, newRole: ROLE): Promise<void> {
+    await UserModel.findByIdAndUpdate(user._id, {
+      role: newRole,
+    });
+  }
+
+  // 선택한 회원 탈퇴
   async deleteUsers(userIds: string[]): Promise<void> {
     await Promise.all(
       userIds.map(async (userId) => {

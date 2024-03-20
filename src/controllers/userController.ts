@@ -171,6 +171,13 @@ class UserController {
     return res.status(200).json({ users, totalUsers });
   }
 
+  async changeUserRole(req: Request, res: Response) {
+    const userId = req.params.userId;
+    const { newRole } = req.body;
+    await UserService.changeUserRole(userId, newRole);
+    return res.status(200).json({ message: "유저 권한이 변경되었습니다." });
+  }
+
   async deleteUsers(req: Request, res: Response) {
     const { userIds } = req.body;
     await UserService.deleteUsers(userIds);

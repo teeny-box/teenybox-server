@@ -10,6 +10,7 @@ import {
 } from "../common/utils/tokenUtils";
 import { deleteImagesFromS3 } from "../common/utils/awsS3Utils";
 import { STATE } from "../common/enum/user-state.enum";
+import { ROLE } from "../common/enum/user-role.enum";
 
 export class UserService {
   // 회원가입
@@ -29,7 +30,7 @@ export class UserService {
       if (
         user &&
         user.state === STATE.WITHDRAWN &&
-        user.id === existingUser.id
+        user.user_id === existingUser.user_id
       ) {
         return true; // 탈퇴한 사용자는 기존 닉네임 사용 가능
       }
@@ -334,7 +335,9 @@ export class UserService {
     await UserRepository.cancelBookmarks(userId, showIds);
   }
 
-  // 전체 회원 목록 조회(관리자 페이지)
+  /* 관리자 페이지 */
+
+  // 전체 회원 목록 조회
   async getAllUsers(
     page: number,
   ): Promise<{ users: IUser[]; totalUsers: number }> {
@@ -350,7 +353,20 @@ export class UserService {
     return { users, totalUsers };
   }
 
-  // 선택한 회원 탈퇴(관리자 페이지)
+  // 유저 권한 변경
+  async changeUserRole(userId: string, newRole: ROLE): Promise<void> {
+    const user = await this.getUserById(userId);
+    if (!newRole) {
+      throw new BadRequestError("유저 권한을 입력해야 합니다.");
+    } else if (newRole !== ROLE.ADMIN && newRole !== ROLE.USER) {
+      throw new BadRequestError(
+        "유저 권한은 'admin', 'user' 중 하나를 입력해야 합니다.",
+      );
+    }
+    await UserRepository.changeUserRole(user, newRole);
+  }
+
+  // 선택한 회원 탈퇴
   async deleteUsers(userIds: string[]): Promise<void> {
     await UserRepository.deleteUsers(userIds);
   }
