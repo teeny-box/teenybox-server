@@ -9,6 +9,7 @@ import { IUser } from "../models/userModel";
 import { ROLE } from "../common/enum/user-role.enum";
 import commentService from "./commentService";
 import { FilterQuery } from "mongoose";
+import CustomError from "../common/error/CustomError";
 
 class PostService {
   // 게시글 생성
@@ -222,7 +223,7 @@ class PostService {
 
     // 사용자가 이미 추천했는지 확인
     if (post.likedUsers.includes(userId)) {
-      throw new Error("이미 추천한 게시글입니다.");
+      throw new CustomError(405, "이미 추천한 게시글입니다.");
     }
 
     // 중복 추천이 아닌 경우, 사용자 ID를 배열에 추가
@@ -244,7 +245,7 @@ class PostService {
 
     // 사용자가 추천했는지 확인
     if (!post.likedUsers.includes(userId)) {
-      throw new Error("아직 추천하지 않은 게시글 입니다.");
+      throw new CustomError(405, "아직 추천하지 않은 게시글 입니다.");
     }
 
     // 추천했다면, 삭제해서 새로운 배열 추가

@@ -6,7 +6,7 @@ class PostController {
   async createPost(req: AuthRequest, res: Response): Promise<void> {
     // 인증된 사용자의 정보가 있는지 확인합니다.
     if (!req.user) {
-      res.status(401).json({ message: "사용자 인증이 필요합니다." });
+      res.status(402).json({ message: "로그인된 사용자만 가능합니다." });
       return;
     }
 
@@ -21,7 +21,7 @@ class PostController {
   // 게시글 수정
   async updatePost(req: AuthRequest, res: Response): Promise<void> {
     if (!req.user) {
-      res.status(401).json({ message: "사용자 인증이 필요합니다." });
+      res.status(402).json({ message: "로그인된 사용자만 가능합니다." });
       return;
     }
 

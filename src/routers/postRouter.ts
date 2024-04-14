@@ -131,8 +131,26 @@ export default router;
  *                 createdAt: "2024-01-18T03:44:02.952Z"
  *                 updatedAt: "2024-01-18T03:44:02.952Z"
  *                 __v: 0
- *       '400':
+ *       '401':
+ *         description: 사용자 권한 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "사용자 인증이 필요합니다."
+ *       '500':
  *         description: 잘못된 요청
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글 생성에 실패했습니다."
  *
  *   get:
  *     tags:
@@ -167,7 +185,15 @@ export default router;
  *               items:
  *                 $ref: '#/components/schemas/PostResponse'
  *       '404':
- *         description: 게시물을 찾을 수 없음
+ *         description: 게시물 리스트를 조회할 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "입력이 잘못되었습니다."
  *
  * /posts/{postNumber}:
  *   put:
@@ -233,10 +259,36 @@ export default router;
  *                 createdAt: "2024-01-18T03:44:02.952Z"
  *                 updatedAt: "2024-01-18T04:00:00.000Z"
  *                 __v: 1
- *       '400':
- *         description: 잘못된 요청
+ *       '401':
+ *         description: 사용자 권한 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글 수정/고정 권한이 없습니다."
+ *       '402':
+ *         description: 로그인 필요
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "로그인된 사용자만 가능합니다."
  *       '404':
- *         description: 게시물을 찾을 수 없음
+ *         description: 게시글을 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글을 찾을 수 없습니다."
  *   get:
  *     tags:
  *       - Post
@@ -299,7 +351,15 @@ export default router;
  *                 updatedAt: "2024-01-18T04:00:00.000Z"
  *                 __v: 1
  *       '404':
- *         description: 게시물을 찾을 수 없음
+ *         description: 게시글을 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글을 찾을 수 없습니다."
  *
  *   delete:
  *     tags:
@@ -315,8 +375,26 @@ export default router;
  *     responses:
  *       '200':
  *         description: 게시물 삭제 성공
+ *       '401':
+ *         description: 사용자 권한 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글 삭제 권한이 없습니다."
  *       '404':
- *         description: 게시물을 찾을 수 없음
+ *         description: 게시글을 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글을 찾을 수 없습니다."
  *
  * /posts/bulk:
  *   delete:
@@ -342,10 +420,16 @@ export default router;
  *     responses:
  *       '200':
  *         description: 게시물들이 성공적으로 삭제됨
- *       '400':
- *         description: 잘못된 요청
  *       '401':
- *         description: 인증 실패
+ *         description: 사용자 권한 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글 삭제 권한이 없습니다."
  *
  * /posts/user/{userId}:
  *   get:
@@ -415,8 +499,16 @@ export default router;
  *                     tags: ["태그1", "태그2"]
  *                     createdAt: "2023-01-01T00:00:00.000Z"
  *                     updatedAt: "2023-01-01T00:00:00.000Z"
- *       404:
- *         description: 검색 결과를 찾을 수 없음
+ *       '400':
+ *         description: 검색이 제대로 이루어지지 않음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "타입과 검색어를 입력하세요."
  *
  * /posts/{postNumber}/like:
  *   post:
@@ -454,6 +546,27 @@ export default router;
  *                 message: 게시글이 성공적으로 추천되었습니다.
  *                 post_number: 37
  *                 likes: 10
+ *       '404':
+ *         description: 게시글을 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글을 찾을 수 없습니다."
+ *       '405':
+ *         description: 이미 추천한 게시글
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "이미 추천한 게시글입니다."
+ *
  *   delete:
  *     tags:
  *       - Post
@@ -489,7 +602,26 @@ export default router;
  *                 message: 게시글 추천이 성공적으로 취소되었습니다.
  *                 post_number: 37
  *                 likes: 10
- *
+ *       '404':
+ *         description: 게시글을 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글을 찾을 수 없습니다."
+ *       '405':
+ *         description: 추천되지 않은 게시글
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "아직 추천하지 않은 게시글 입니다."
  * components:
  *   schemas:
  *     CreatePostRequest:
