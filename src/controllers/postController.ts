@@ -51,7 +51,7 @@ class PostController {
   // 게시글 번호로 상세조회
   async getPostByNumber(req: Request, res: Response): Promise<void> {
     const postnumber = Number(req.params.postNumber);
-    const usage = String(req.query.usage) || "view";
+    const usage = String(req.query.usage) || "not-view";
 
     const post = await PostService.findByPostNumber(postnumber, usage);
     res.status(200).json(post);
