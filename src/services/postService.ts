@@ -166,6 +166,8 @@ class PostService {
     query: string,
     page: number,
     limit: number,
+    sortBy: string,
+    sortOrder: "asc" | "desc",
   ): Promise<{ posts: IPost[]; totalCount: number }> {
     const skip = (page - 1) * limit;
 
@@ -187,7 +189,14 @@ class PostService {
     } else {
       throw new Error("잘못된 타입입니다.");
     }
-    return await PostRepository.findByQuery(searchQuery, skip, limit);
+
+    return await PostRepository.findByQuery(
+      searchQuery,
+      skip,
+      limit,
+      sortBy,
+      sortOrder,
+    );
   }
 
   // 게시글 일괄 삭제
