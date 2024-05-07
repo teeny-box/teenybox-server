@@ -312,25 +312,40 @@ export default router;
  *           required: true
  *           schema:
  *             type: string
+ *             enum: ['title', 'tag', 'play_title']
  *             description: 검색할 유형
  *         - in: query
  *           name: query
  *           required: true
  *           schema:
  *             type: string
- *             description: 검색어
+ *           description: 검색어
  *         - in: query
  *           name: page
  *           schema:
  *             type: integer
  *             default: 1
- *             description: 페이지 번호
+ *           description: 페이지 번호
  *         - in: query
  *           name: limit
  *           schema:
  *             type: integer
  *             default: 10
  *             description: 페이지당 게시글 수
+ *         - in: query
+ *           name: sortBy
+ *           schema:
+ *             type: string
+ *             default: 'newest'
+ *             enum: ['newest', 'oldest', 'most_viewed', 'most_liked']
+ *           description: 결과를 정렬할 기준 ('newest', 'oldest', 'most_viewed', 'most_liked')
+ *         - in: query
+ *           name: sortOrder
+ *           schema:
+ *             type: string
+ *             default: 'desc'
+ *             enum: ['asc', 'desc']
+ *           description: asc - 오름차순, desc - 내림차순
  *       responses:
  *         '200':
  *           description: 검색 결과 반환
