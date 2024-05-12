@@ -337,8 +337,8 @@ export default router;
  *           schema:
  *             type: string
  *             default: 'newest'
- *             enum: ['newest', 'oldest', 'most_viewed', 'most_liked']
- *           description: 결과를 정렬할 기준 ('newest', 'oldest', 'most_viewed', 'most_liked')
+ *             enum: ['time', 'view', 'like']
+ *           description: 결과를 정렬할 기준 ('time', 'view', 'like')
  *         - in: query
  *           name: sortOrder
  *           schema:

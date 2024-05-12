@@ -490,9 +490,9 @@ export default router;
  *         name: sortBy
  *         schema:
  *           type: string
- *           default: 'newest'
- *           enum: ['newest', 'oldest', 'most_viewed', 'most_liked']
- *         description: 결과를 정렬할 기준 ('newest', 'oldest', 'most_viewed', 'most_liked')
+ *           default: 'time'
+ *           enum: ['time', 'view', 'like']
+ *         description: 결과를 정렬할 기준 ('time', 'view', 'like')
  *       - in: query
  *         name: sortOrder
  *         schema:

@@ -171,10 +171,9 @@ class promotionRepository {
   ): Promise<{ promotions: IPromotion[]; totalCount: number }> {
     // 정렬 필드를 기준으로 매핑
     const sortFieldMapping = {
-      newest: "createdAt", // 최신순
-      oldest: "createdAt", // 오래된순
-      most_viewed: "views", // 조회순
-      most_liked: "likes", // 추천순
+      time: "createdAt", // 'time'으로 통합하여 사용
+      view: "views", // 조회순
+      like: "likes", // 추천순
     };
 
     // MongoDB 정렬 방향 설정
@@ -184,12 +183,6 @@ class promotionRepository {
     const sortOptions = {};
     const sortField = sortFieldMapping[sortBy];
     sortOptions[sortField] = sortDirection;
-
-    if (sortBy === "newest") {
-      sortOptions[sortField] = -1; // 'newest'는 내림차순
-    } else if (sortBy === "oldest") {
-      sortOptions[sortField] = 1; // 'oldest'는 오름차순
-    }
 
     let promotions = await PromotionModel.find(query)
       .sort(sortOptions)
