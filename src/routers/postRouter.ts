@@ -466,6 +466,7 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
+ *           enum: ['title', 'tag']
  *         description: 검색할 유형
  *       - in: query
  *         name: query
@@ -485,6 +486,20 @@ export default router;
  *           type: integer
  *           default: 10
  *         description: 페이지당 게시글 수
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           default: 'time'
+ *           enum: ['time', 'view', 'like']
+ *         description: 결과를 정렬할 기준 ('time', 'view', 'like')
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           default: 'desc'
+ *           enum: ['asc', 'desc']
+ *         description: asc - 오름차순, desc - 내림차순
  *     responses:
  *       200:
  *         description: 검색 결과 반환

@@ -107,6 +107,12 @@ class PromotionController {
       const page = Number(req.query.page || 1); // 페이지 번호, 기본값은 1
       const limit = Number(req.query.limit || 10); // 페이지 당 항목 수, 기본값은 10
 
+      // 유효한 정렬 기준과 정렬 방향 확인
+      const sortBy = (req.query.sortBy as string) || "time";
+      const sortOrderParam = req.query.sortOrder as string | undefined;
+      const sortOrder: "asc" | "desc" =
+        sortOrderParam === "asc" ? "asc" : "desc"; // 유효하지 않은 값은 'desc'로 처리
+
       // 검색 유형과 검색어가 모두 제공되었는지 확인
       if (!type || !query) {
         res.status(400).json({ message: "타입과 검색어를 입력하세요." });
@@ -119,6 +125,8 @@ class PromotionController {
         query,
         page,
         limit,
+        sortBy,
+        sortOrder,
       );
 
       // 검색 결과 반환

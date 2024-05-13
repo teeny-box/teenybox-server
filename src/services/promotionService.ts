@@ -207,6 +207,8 @@ class PromotionService {
     query: string,
     page: number,
     limit: number,
+    sortBy: string,
+    sortOrder: "asc" | "desc",
   ): Promise<{ promotions: IPromotion[]; totalCount: number }> {
     const skip = (page - 1) * limit;
 
@@ -234,7 +236,13 @@ class PromotionService {
       throw new Error("잘못된 타입입니다.");
     }
 
-    return await PromotionRepository.findByQuery(searchQuery, skip, limit);
+    return await PromotionRepository.findByQuery(
+      searchQuery,
+      skip,
+      limit,
+      sortBy,
+      sortOrder,
+    );
   }
 
   // 게시글 일괄 삭제
