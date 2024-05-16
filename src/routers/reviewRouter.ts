@@ -179,10 +179,12 @@ import multer from "multer";
  *         type: string
  *         enum:
  *           - recent
+ *           - outdated
  *           - rate
  *         description: |
  *           정렬 순서를 지정합니다.
  *           - 'recent': 최신순으로 정렬합니다.
+ *           - 'outdated': 오래된 순으로 정렬합니다.
  *           - 'rate': 높은 평점순으로 정렬합니다.
  *     responses:
  *       200:
