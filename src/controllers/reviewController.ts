@@ -74,6 +74,9 @@ class ReviewController {
         case ReviewOrder.RECENT:
           sort = { createdAt: -1 };
           break;
+        case ReviewOrder.OUTDATED:
+          sort = { createdAt: 1 };
+          break;
         case ReviewOrder.HIGH_RATE:
           sort = { rate: -1 };
           break;
