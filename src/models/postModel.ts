@@ -12,8 +12,9 @@ export interface IPost extends Document {
   likes: number; // 추천수
   views: number; // 조회수
   likedUsers: string[]; // 추천한 사용자의 ID 목록
-  deletedAt?: Date | null; // 삭제로직 변경을 위한 필드 추가
+  category: "자유" | "공지";
   is_fixed: "고정" | "일반";
+  deletedAt?: Date | null; // 삭제로직 변경을 위한 필드 추가
 }
 
 export interface IUser extends Document {
@@ -64,14 +65,19 @@ const postSchema = new Schema<IPost>(
       required: true,
       default: [],
     },
-    deletedAt: {
-      type: Date,
-      default: null,
+    category: {
+      type: String,
+      enum: ["자유", "공지"],
+      required: true,
     },
     is_fixed: {
       type: String,
       enum: ["고정", "일반"],
       required: true,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
     },
   },
   {

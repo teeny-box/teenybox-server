@@ -170,10 +170,18 @@ export default router;
  *           default: desc
  *           description: asc = 오름차순, desc = 내림차순
  *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *           enum: ["자유", "공지"]
+ *           default: 구분 없음
+ *           description: 일반또는 고정 입력
+ *       - in: query
  *         name: isFixed
  *         schema:
  *           type: string
- *           default: 일반게시글, 고정게시글 구분 없음
+ *           enum: ["일반", "고정"]
+ *           default: 구분 없음
  *           description: 일반또는 고정 입력
  *     responses:
  *       '200':
@@ -435,7 +443,7 @@ export default router;
  *   get:
  *     tags:
  *       - Post
- *     summary: 특정 사용자의 게시물 모두 조회, 이제 totalCount도 제공
+ *     summary: 특정 사용자의 게시물 모두 조회, 정렬, 총 게시글 갯수 제공
  *     parameters:
  *       - in: path
  *         name: userId
@@ -692,6 +700,10 @@ export default router;
  *           items:
  *             type: string
  *           description: 게시글에 사용될 태그 배열
+ *         category:
+ *           type: string
+ *           enum: ["자유", "공지"]
+ *           description: 게시글 카테고리
  *         is_fixed:
  *           type: string
  *           enum: ["일반", "고정"]
