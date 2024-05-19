@@ -4,8 +4,7 @@ import { IPromotion } from "../models/promotionModel";
 import NotFoundError from "../common/error/NotFoundError";
 import InternalServerError from "../common/error/InternalServerError";
 import UnauthorizedError from "../common/error/UnauthorizedError";
-import { UserModel } from "../models/userModel";
-import { IUser } from "../models/userModel";
+import { UserModel, IUser } from "../models/userModel";
 import { FilterQuery } from "mongoose";
 import { ROLE } from "../common/enum/user-role.enum";
 import commentService from "./commentService";
@@ -69,8 +68,6 @@ class PromotionService {
     if (promotion.user_id["_id"].toString() !== userId.toString()) {
       throw new UnauthorizedError("게시글 수정 권한이 없습니다.");
     }
-
-    const user = await UserModel.findOne({ _id: userId });
 
     const updatedPromotion = await PromotionRepository.update(
       promotionNumber,
