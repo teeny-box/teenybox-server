@@ -128,7 +128,6 @@ class PostService {
   }
 
   // userId로 게시글들 조회
-  // TODO : 정렬ㄹ기능 추가해야함
   async findPostsByUserId(
     userId: string,
     page: number,

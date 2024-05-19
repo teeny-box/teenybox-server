@@ -133,12 +133,16 @@ class PromotionService {
     userId: string,
     page: number,
     limit: number,
+    sortBy: string, // 정렬 기준
+    sortOrder: "asc" | "desc", // 정렬 순서
   ): Promise<{ promotions: IPromotion[]; totalCount: number }> {
     const skip = (page - 1) * limit;
-    return await PromotionRepository.findPromotionsByUserIdWithCount(
+    return await PromotionRepository.findPromotionsByUserId(
       userId,
       skip,
       limit,
+      sortBy,
+      sortOrder,
     );
   }
 

@@ -273,7 +273,7 @@ export default router;
  *     get:
  *       tags:
  *         - Promotion
- *       summary: 특정 사용자의 모든 홍보게시글 조회
+ *       summary: 특정 사용자의 모든 홍보게시글 조회, 정렬, 총 게시글 갯수 제공
  *       parameters:
  *         - in: path
  *           name: userId
@@ -281,6 +281,36 @@ export default router;
  *           schema:
  *             type: string
  *             description: 조회할 사용자의 ID
+ *         - in: query
+ *           name: page
+ *           required: false
+ *           schema:
+ *             type: integer
+ *             default: 1
+ *             description: 조회할 페이지 번호
+ *         - in: query
+ *           name: limit
+ *           required: false
+ *           schema:
+ *             type: integer
+ *             default: 10
+ *             description: 페이지 당 표시할 게시물 수
+ *         - in: query
+ *           name: sortBy
+ *           required: false
+ *           schema:
+ *             type: string
+ *             default: 'time'
+ *             enum: ['time', 'view', 'like']
+ *             description: 정렬 기준
+ *         - in: query
+ *           name: sortOrder
+ *           required: false
+ *           schema:
+ *             type: string
+ *             enum: [asc, desc]
+ *             default: 'desc'
+ *             description: 정렬 순서 (오름차순 'asc' 혹은 내림차순 'desc')
  *       responses:
  *         '200':
  *           description: 사용자의 홍보게시글 목록 반환

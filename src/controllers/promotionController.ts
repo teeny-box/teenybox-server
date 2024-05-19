@@ -73,11 +73,16 @@ class PromotionController {
   async getPromotionsByUserId(req: Request, res: Response): Promise<void> {
     const page = Number(req.query.page || 1);
     const limit = Number(req.query.limit || 0);
+    const sortBy = (req.query.sortBy as string) || "time";
+    const sortOrderParam = req.query.sortOrder as string | undefined;
+    const sortOrder: "asc" | "desc" = sortOrderParam === "asc" ? "asc" : "desc"; // 유효하지 않은 값은 'desc'로 처리
     const { promotions, totalCount } =
       await PromotionService.findPromotionsByUserId(
         req.params.userId,
         page,
         limit,
+        sortBy,
+        sortOrder,
       );
 
     res.status(200).json({ promotions, totalCount });
