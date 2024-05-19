@@ -110,8 +110,8 @@ export default router;
  *           description: 상영 종료일
  *         category:
  *           type: string
- *           enum: ["연극", "기타", "공지"]
- *           description: 홍보게시글의 카테고리 ("연극", "기타", "공지" 중에서 한가지 선택)
+ *           enum: ["연극", "기타"]
+ *           description: 홍보게시글의 카테고리 ("연극", "기타" 중에서 선택)
  *         play_title:
  *           type: string
  *           description: 연극의 제목 (카테고리가 "연극"인 경우 필요)
@@ -173,7 +173,7 @@ export default router;
  *           schema:
  *             type: string
  *             default: 필터없음
- *             description: 연극, 기타, 공지 중에서 한가지 입력
+ *             description: 연극, 기타중에서 입력
  *       responses:
  *         '200':
  *           description: 홍보게시글 목록 반환

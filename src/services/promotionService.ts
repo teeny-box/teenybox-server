@@ -35,14 +35,6 @@ class PromotionService {
         throw new NotFoundError("사용자를 찾을 수 없습니다.");
       }
 
-      if (user.role === "user") {
-        if (promotionData.category === "공지") {
-          throw new UnauthorizedError(
-            "일반 사용자는 게시글을 공지게시글을 작성할 수 없습니다.",
-          );
-        }
-      }
-
       // user정보 추가
       const promotionDataWithUser = {
         ...promotionData,
@@ -102,10 +94,7 @@ class PromotionService {
     const skip = (page - 1) * limit;
     const filter: FilterQuery<IPromotion> = {}; // 필터 타입 지정
 
-    if (
-      category &&
-      (category === "연극" || category === "기타" || category === "공지")
-    ) {
+    if (category && (category === "연극" || category === "기타")) {
       filter.category = category;
     }
     filter.deletedAt = null;
