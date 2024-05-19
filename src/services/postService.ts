@@ -128,13 +128,22 @@ class PostService {
   }
 
   // userId로 게시글들 조회
+  // TODO : 정렬ㄹ기능 추가해야함
   async findPostsByUserId(
     userId: string,
     page: number,
     limit: number,
+    sortBy: string, // 정렬 기준
+    sortOrder: "asc" | "desc", // 정렬 순서
   ): Promise<{ posts: IPost[]; totalCount: number }> {
     const skip = (page - 1) * limit;
-    return await PostRepository.findPostsByUserIdWithCount(userId, skip, limit);
+    return await PostRepository.findPostsByUserId(
+      userId,
+      skip,
+      limit,
+      sortBy,
+      sortOrder,
+    );
   }
 
   // 게시글 삭제 (postNumber를 기반으로)
