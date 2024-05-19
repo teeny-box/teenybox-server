@@ -16,7 +16,6 @@ export interface IPromotion extends Document {
   views: number;
   likedUsers: string[];
   category: "연극" | "기타" | "공지";
-  is_fixed: "일반" | "고정";
   play_title?: string;
   runtime?: number;
   location?: string;
@@ -82,11 +81,6 @@ const promotionSchema = new Schema<IPromotion>(
     category: {
       type: String,
       enum: ["연극", "기타", "공지"],
-      required: true,
-    },
-    is_fixed: {
-      type: String,
-      enum: ["일반", "고정"],
       required: true,
     },
     play_title: {

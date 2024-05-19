@@ -46,12 +46,6 @@ export class CreatePromotionDTO {
   )
   category!: "연극" | "기타" | "공지";
 
-  @IsEnum(
-    { 일반: "일반", 고정: "고정" },
-    { message: "일반, 고정 중에서 선택해야 합니다." },
-  )
-  is_fixed!: "일반" | "고정";
-
   @IsOptional()
   @IsString({ message: "연극제목은 문자열이어야 합니다." })
   play_title?: string;
@@ -102,13 +96,6 @@ export class UpdatePromotionDTO {
     { message: "카테고리는 연극, 기타, 공지중에 선택하세요." },
   )
   category?: "연극" | "기타" | "공지";
-
-  @IsOptional()
-  @IsEnum(
-    { 일반: "일반", 고정: "고정" },
-    { message: "일반, 고정 중에서 선택해야 합니다." },
-  )
-  is_fixed?: "일반" | "고정";
 
   @IsOptional()
   @IsString({ message: "연극제목은 문자열이어야 합니다." })
