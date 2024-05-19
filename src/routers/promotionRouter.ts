@@ -172,8 +172,9 @@ export default router;
  *           name: category
  *           schema:
  *             type: string
- *             default: 필터없음
- *             description: 연극, 기타중에서 입력
+ *             enum: ["연극", "기타"]
+ *             default: 구분 없음
+ *             description: 연극또는 기타 입력
  *       responses:
  *         '200':
  *           description: 홍보게시글 목록 반환
