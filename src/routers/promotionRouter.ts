@@ -110,12 +110,8 @@ export default router;
  *           description: 상영 종료일
  *         category:
  *           type: string
- *           enum: ["연극", "기타", "공지"]
- *           description: 홍보게시글의 카테고리 ("연극", "기타", "공지" 중에서 한가지 선택)
- *         is_fixed:
- *           type: string
- *           enum: ["일반", "고정"]
- *           description: 일반또는 고정 입력
+ *           enum: ["연극", "기타"]
+ *           description: 홍보게시글의 카테고리 ("연극", "기타" 중에서 선택)
  *         play_title:
  *           type: string
  *           description: 연극의 제목 (카테고리가 "연극"인 경우 필요)
@@ -176,14 +172,9 @@ export default router;
  *           name: category
  *           schema:
  *             type: string
- *             default: 필터없음
- *             description: 연극, 기타, 공지 중에서 한가지 입력
- *         - in: query
- *           name: is_fixed
- *           schema:
- *             type: string
- *             default: 일반게시글, 고정게시글 구분 없음
- *             description: 일반또는 고정 입력
+ *             enum: ["연극", "기타"]
+ *             default: 구분 없음
+ *             description: 연극또는 기타 입력
  *       responses:
  *         '200':
  *           description: 홍보게시글 목록 반환
@@ -283,7 +274,7 @@ export default router;
  *     get:
  *       tags:
  *         - Promotion
- *       summary: 특정 사용자의 모든 홍보게시글 조회
+ *       summary: 특정 사용자의 모든 홍보게시글 조회, 정렬, 총 게시글 갯수 제공
  *       parameters:
  *         - in: path
  *           name: userId
@@ -291,6 +282,36 @@ export default router;
  *           schema:
  *             type: string
  *             description: 조회할 사용자의 ID
+ *         - in: query
+ *           name: page
+ *           required: false
+ *           schema:
+ *             type: integer
+ *             default: 1
+ *             description: 조회할 페이지 번호
+ *         - in: query
+ *           name: limit
+ *           required: false
+ *           schema:
+ *             type: integer
+ *             default: 10
+ *             description: 페이지 당 표시할 게시물 수
+ *         - in: query
+ *           name: sortBy
+ *           required: false
+ *           schema:
+ *             type: string
+ *             default: 'time'
+ *             enum: ['time', 'view', 'like']
+ *             description: 정렬 기준
+ *         - in: query
+ *           name: sortOrder
+ *           required: false
+ *           schema:
+ *             type: string
+ *             enum: [asc, desc]
+ *             default: 'desc'
+ *             description: 정렬 순서 (오름차순 'asc' 혹은 내림차순 'desc')
  *       responses:
  *         '200':
  *           description: 사용자의 홍보게시글 목록 반환

@@ -23,6 +23,12 @@ export class CreatePostDTO {
   tags?: string[] | string;
 
   @IsEnum(
+    { 자유: "자유", 기타: "공지" },
+    { message: "카테고리는 자유, 공지중에 선택하세요." },
+  )
+  category!: "자유" | "공지";
+
+  @IsEnum(
     { 고정: "고정", 일반: "일반" },
     { message: "고정, 일반 중에서 선택해야 합니다." },
   )
@@ -42,6 +48,12 @@ export class UpdatePostDTO {
 
   @IsOptional()
   tags?: string[] | string;
+
+  @IsEnum(
+    { 자유: "자유", 기타: "공지" },
+    { message: "카테고리는 자유, 공지중에 선택하세요." },
+  )
+  category!: "자유" | "공지";
 
   @IsEnum(
     { 고정: "고정", 일반: "일반" },

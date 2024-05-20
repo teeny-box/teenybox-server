@@ -4,8 +4,7 @@ import { IPost } from "../models/postModel";
 import NotFoundError from "../common/error/NotFoundError";
 import UnauthorizedError from "../common/error/UnauthorizedError";
 import InternalServerError from "../common/error/InternalServerError";
-import { UserModel } from "../models/userModel";
-import { IUser } from "../models/userModel";
+import { UserModel, IUser } from "../models/userModel";
 import { ROLE } from "../common/enum/user-role.enum";
 import commentService from "./commentService";
 import { FilterQuery } from "mongoose";
@@ -37,6 +36,12 @@ class PostService {
             "일반 사용자는 게시글을 고정할 수 없습니다.",
           );
         }
+        if (postData.category === "공지") {
+          throw new UnauthorizedError(
+            "일반 사용자는 공지게시글을 작성할 수 없습니다.",
+          );
+        }
+        postData.category = "자유";
         postData.is_fixed = "일반";
       }
 
@@ -80,6 +85,12 @@ class PostService {
           "일반 사용자는 게시글을 고정할 수 없습니다.",
         );
       }
+      if (updateData.category === "공지") {
+        throw new UnauthorizedError(
+          "일반 사용자는 공지게시글을 작성할 수 없습니다.",
+        );
+      }
+      updateData.category = "자유";
       updateData.is_fixed = "일반";
     }
 
@@ -94,6 +105,7 @@ class PostService {
     limit: number,
     sortBy: string, // 정렬 기준
     sortOrder: "asc" | "desc", // 정렬 순서
+    category: string,
     is_fixed: string,
   ): Promise<{
     posts: Array<IPost & { commentsCount: number }>;
@@ -103,6 +115,9 @@ class PostService {
 
     const filter: FilterQuery<IPost> = {}; // 필터 타입 지정
 
+    if (category && (category === "자유" || category === "공지")) {
+      filter.category = category;
+    }
     if (is_fixed && (is_fixed === "고정" || is_fixed === "일반")) {
       filter.is_fixed = is_fixed;
     }
@@ -132,9 +147,17 @@ class PostService {
     userId: string,
     page: number,
     limit: number,
+    sortBy: string, // 정렬 기준
+    sortOrder: "asc" | "desc", // 정렬 순서
   ): Promise<{ posts: IPost[]; totalCount: number }> {
     const skip = (page - 1) * limit;
-    return await PostRepository.findPostsByUserIdWithCount(userId, skip, limit);
+    return await PostRepository.findPostsByUserId(
+      userId,
+      skip,
+      limit,
+      sortBy,
+      sortOrder,
+    );
   }
 
   // 게시글 삭제 (postNumber를 기반으로)

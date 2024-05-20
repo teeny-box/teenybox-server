@@ -170,10 +170,18 @@ export default router;
  *           default: desc
  *           description: asc = 오름차순, desc = 내림차순
  *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *           enum: ["자유", "공지"]
+ *           default: 구분 없음
+ *           description: 일반또는 고정 입력
+ *       - in: query
  *         name: isFixed
  *         schema:
  *           type: string
- *           default: 일반게시글, 고정게시글 구분 없음
+ *           enum: ["일반", "고정"]
+ *           default: 구분 없음
  *           description: 일반또는 고정 입력
  *     responses:
  *       '200':
@@ -435,7 +443,7 @@ export default router;
  *   get:
  *     tags:
  *       - Post
- *     summary: 특정 사용자의 게시물 모두 조회, 이제 totalCounts도 제공
+ *     summary: 특정 사용자의 게시물 모두 조회, 정렬, 총 게시글 갯수 제공
  *     parameters:
  *       - in: path
  *         name: userId
@@ -443,15 +451,51 @@ export default router;
  *         schema:
  *           type: string
  *           description: 조회할 사용자의 ID
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *           description: 조회할 페이지 번호
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *           description: 페이지 당 표시할 게시물 수
+ *       - in: query
+ *         name: sortBy
+ *         required: false
+ *         schema:
+ *           type: string
+ *           default: 'time'
+ *           enum: ['time', 'view', 'like']
+ *           description: 정렬 기준
+ *       - in: query
+ *         name: sortOrder
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *           default: 'desc'
+ *           description: 정렬 순서 (오름차순 'asc' 혹은 내림차순 'desc')
  *     responses:
  *       '200':
  *         description: 사용자의 게시물 목록 조회 성공
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/PostResponse'
+ *               type: object
+ *               properties:
+ *                 posts:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/PostResponse'
+ *                 totalCount:
+ *                   type: integer
+ *                   description: 전체 게시물 수
  *       '404':
  *         description: 사용자를 찾을 수 없음
  *
@@ -656,6 +700,10 @@ export default router;
  *           items:
  *             type: string
  *           description: 게시글에 사용될 태그 배열
+ *         category:
+ *           type: string
+ *           enum: ["자유", "공지"]
+ *           description: 게시글 카테고리
  *         is_fixed:
  *           type: string
  *           enum: ["일반", "고정"]

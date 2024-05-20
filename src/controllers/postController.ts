@@ -36,6 +36,7 @@ class PostController {
     const limit = Number(req.query.limit || -1);
     const sortBy = String(req.query.sortBy) || "post_number";
     const sortOrder = String(req.query.sortOrder) === "desc" ? "desc" : "asc";
+    const category = String(req.query.category);
     const is_fixed = String(req.query.isFixed);
 
     const posts = await PostService.getAllPosts(
@@ -43,6 +44,7 @@ class PostController {
       limit,
       sortBy,
       sortOrder,
+      category,
       is_fixed,
     );
     res.status(200).json(posts);
@@ -61,10 +63,15 @@ class PostController {
   async getPostsByUserId(req: Request, res: Response): Promise<void> {
     const page = Number(req.query.page || 1);
     const limit = Number(req.query.limit || 0);
+    const sortBy = (req.query.sortBy as string) || "time";
+    const sortOrderParam = req.query.sortOrder as string | undefined;
+    const sortOrder: "asc" | "desc" = sortOrderParam === "asc" ? "asc" : "desc"; // 유효하지 않은 값은 'desc'로 처리
     const { posts, totalCount } = await PostService.findPostsByUserId(
       req.params.userId,
       page,
       limit,
+      sortBy,
+      sortOrder,
     );
 
     res.status(200).json({ posts, totalCount });
