@@ -286,10 +286,84 @@ const router = express.Router();
  */
 /**
  * @swagger
- * /comments/users:
+ * /comments/posts:
  *   get:
  *     tags: [comment]
- *     summary: 특정 사용자가 작성한 모든 댓글 조회 (페이징 처리)
+ *     summary: 특정 사용자가 작성한 모든 댓글 조회 - 커뮤니티 (페이징 처리)
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: |
+ *           페이지 번호 (기본값: 1)
+ *         example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         description: |
+ *           한 페이지에 표시할 댓글 수 (기본값: 20)
+ *         example: 20
+ *     responses:
+ *       '200':
+ *         description: 성공적으로 댓글을 가져왔을 때 반환되는 응답
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 comments:
+ *                   type: array
+ *                   description: 사용자가 작성한 댓글 목록
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       content:
+ *                         type: string
+ *                         description: 댓글 내용
+ *                         example: "이 댓글은 사용자가 작성한 내용입니다."
+ *                       user_id:
+ *                         type: string
+ *                         description: 댓글 작성자의 ID
+ *                         example: "61576b28b4f03f08f95317ca"
+ *                       user_nickname:
+ *                         type: string
+ *                         description: 댓글 작성자의 닉네임
+ *                         example: "user123"
+ *                       user_profile_url:
+ *                         type: string
+ *                         description: 사용자 프로필 url
+ *                         example: "https://elice-5th.s3.amazonaws.com/users/1706709450528_KakaoTalk_Photo_2023-08-25-20-53-41 003.jpeg"
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         description: 댓글 작성일
+ *                         example: "2023-12-30T12:34:56.789Z"
+ *                 totalComments:
+ *                   type: integer
+ *                   description: 사용자가 작성한 전체 댓글 수
+ *                   example: 25
+ *       '500':
+ *         description: 서버 오류가 발생했을 때 반환되는 응답
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: 오류 메시지
+ *                   example: "사용자에 대한 댓글을 가져오는데 실패했습니다."
+ */
+/**
+ * @swagger
+ * /comments/promotions:
+ *   get:
+ *     tags: [comment]
+ *     summary: 특정 사용자가 작성한 모든 댓글 조회 - 홍보 (페이징 처리)
  *     parameters:
  *       - in: query
  *         name: page
@@ -781,11 +855,18 @@ router.get(
   asyncHandler(commentController.getCommentsByPromotionId),
 );
 
-// 특정 사용자가 작성한 모든 댓글 조회 (페이징 처리)
+// 특정 사용자가 작성한 모든 댓글 조회 - 커뮤니티 (페이징 처리)
 router.get(
-  "/users",
+  "/posts",
   authenticateUser,
-  asyncHandler(commentController.getCommentsByUserId),
+  asyncHandler(commentController.getCommentsOfPostsByUserId),
+);
+
+// 특정 사용자가 작성한 모든 댓글 조회 - 홍보 (페이징 처리)
+router.get(
+  "/promotions",
+  authenticateUser,
+  asyncHandler(commentController.getCommentsOfPromotionsByUserId),
 );
 
 // 댓글 수정
