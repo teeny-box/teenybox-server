@@ -11,6 +11,7 @@ import {
 import { deleteImagesFromS3 } from "../common/utils/awsS3Utils";
 import { STATE } from "../common/enum/user-state.enum";
 import { ROLE } from "../common/enum/user-role.enum";
+import { Order } from "../common/enum/order.enum";
 
 export class UserService {
   // 회원가입
@@ -340,11 +341,16 @@ export class UserService {
   // 전체 회원 목록 조회
   async getAllUsers(
     page: number,
+    limit: number,
+    order: Order,
   ): Promise<{ users: IUser[]; totalUsers: number }> {
-    const limit = 20;
     const skip = (page - 1) * limit;
 
-    const { users, totalUsers } = await UserRepository.getUsers(skip, limit);
+    const { users, totalUsers } = await UserRepository.getUsers(
+      skip,
+      limit,
+      order,
+    );
 
     if (!users) {
       throw new NotFoundError("전체 회원 목록을 조회할 수 없습니다.");
