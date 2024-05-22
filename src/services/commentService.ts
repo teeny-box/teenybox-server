@@ -78,10 +78,38 @@ class CommentService {
   }
 
   // 사용자 ID에 따른 댓글 조회 (페이징 처리 추가)
-  async getCommentsByUserId(userId: string, page: number, pageSize: number) {
+  async getCommentsOfPostsByUserId(
+    userId: string,
+    page: number,
+    pageSize: number,
+  ) {
     try {
       const skip = (page - 1) * pageSize;
-      return await CommentRepository.findByUserId(userId, skip, pageSize);
+      return await CommentRepository.findCommentsOfPostsByUserId(
+        userId,
+        skip,
+        pageSize,
+      );
+    } catch (error) {
+      throw new InternalServerError(
+        `사용자 ${userId}에 대한 댓글을 가져오는데 실패했습니다: ${error.message}`,
+      );
+    }
+  }
+
+  // 사용자 ID에 따른 댓글 조회 (페이징 처리 추가)
+  async getCommentsOfPromotionsByUserId(
+    userId: string,
+    page: number,
+    pageSize: number,
+  ) {
+    try {
+      const skip = (page - 1) * pageSize;
+      return await CommentRepository.findCommentsOfPromotionsByUserId(
+        userId,
+        skip,
+        pageSize,
+      );
     } catch (error) {
       throw new InternalServerError(
         `사용자 ${userId}에 대한 댓글을 가져오는데 실패했습니다: ${error.message}`,

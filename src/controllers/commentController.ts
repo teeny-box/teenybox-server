@@ -44,13 +44,33 @@ class CommentController {
     res.status(200).json(comments);
   }
 
-  // 특정 사용자가 작성한 모든 댓글 조회 (페이징 처리 추가)
-  async getCommentsByUserId(req: AuthRequest, res: Response): Promise<void> {
+  // 특정 사용자가 작성한 모든 댓글 조회 - 커뮤니티 (페이징 처리 추가)
+  async getCommentsOfPostsByUserId(
+    req: AuthRequest,
+    res: Response,
+  ): Promise<void> {
     const userId = req.user._id;
-    const page = parseInt(req.query.page as string) || undefined;
-    const limit = parseInt(req.query.limit as string) || undefined;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
 
-    const comments = await CommentService.getCommentsByUserId(
+    const comments = await CommentService.getCommentsOfPostsByUserId(
+      userId,
+      page,
+      limit,
+    );
+    res.status(200).json(comments);
+  }
+
+  // 특정 사용자가 작성한 모든 댓글 조회 - 홍보 (페이징 처리 추가)
+  async getCommentsOfPromotionsByUserId(
+    req: AuthRequest,
+    res: Response,
+  ): Promise<void> {
+    const userId = req.user._id;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+
+    const comments = await CommentService.getCommentsOfPromotionsByUserId(
       userId,
       page,
       limit,
