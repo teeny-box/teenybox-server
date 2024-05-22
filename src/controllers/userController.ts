@@ -3,6 +3,7 @@ import { UserRequestDTO, UserResponseDTO } from "./../dtos/userDto";
 import UserService from "../services/userService";
 import { AuthRequest } from "../middlewares/authUserMiddlewares";
 import { SOCIAL } from "../common/enum/user-social-provider.enum";
+import { Order } from "../common/enum/order.enum";
 
 class UserController {
   async RegisterUser(req: Request, res: Response) {
@@ -166,8 +167,15 @@ class UserController {
   }
 
   async getAllUsers(req: Request, res: Response) {
-    const page = req.query.page ? parseInt(req.query.page as string) : 1;
-    const { users, totalUsers } = await UserService.getAllUsers(page);
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const order =
+      (req.query.order as Order) === Order.ASC ? Order.ASC : Order.DESC;
+    const { users, totalUsers } = await UserService.getAllUsers(
+      page,
+      limit,
+      order,
+    );
     return res.status(200).json({ users, totalUsers });
   }
 

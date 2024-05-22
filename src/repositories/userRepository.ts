@@ -3,6 +3,7 @@ import { ShowModel } from "../models/showModel";
 import { UserRequestDTO } from "../dtos/userDto";
 import { ROLE } from "../common/enum/user-role.enum";
 import { STATE } from "../common/enum/user-state.enum";
+import { Order } from "../common/enum/order.enum";
 
 class UserRepository {
   // 사용자 생성
@@ -115,8 +116,10 @@ class UserRepository {
   async getUsers(
     skip: number,
     limit: number,
+    order: Order,
   ): Promise<{ users: IUser[]; totalUsers: number }> {
     const users = await UserModel.find()
+      .sort({ createdAt: order })
       .skip(skip)
       .limit(limit)
       .select(

@@ -614,6 +614,19 @@ const router = express.Router();
  *           type: integer
  *         description: |
  *           페이지 번호 (기본값: 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: |
+ *           한 페이지에 표시할 사용자 수 (기본값: 20)
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         description: |
+ *           정렬 순서 (기본값: desc)
  *     responses:
  *       200:
  *         description: 전체 회원 조회 성공
