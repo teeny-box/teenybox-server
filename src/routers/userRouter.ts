@@ -614,6 +614,19 @@ const router = express.Router();
  *           type: integer
  *         description: |
  *           페이지 번호 (기본값: 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: |
+ *           한 페이지에 표시할 사용자 수 (기본값: 20)
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         description: |
+ *           정렬 순서 (기본값: desc)
  *     responses:
  *       200:
  *         description: 전체 회원 조회 성공
@@ -654,6 +667,35 @@ const router = express.Router();
  *                 totalUsers:
  *                   type: integer
  *                   example: 14
+ */
+/**
+ * @swagger
+ * /users/admin/users/{userId}:
+ *   patch:
+ *     tags: [user]
+ *     summary: 유저 권한 변경(관리자 페이지)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               newRole:
+ *                 type: string
+ *                 description: admin / user
+ *                 example: "admin"
+ *     responses:
+ *       200:
+ *         description: 유저 권한 변경 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "유저 권한이 변경되었습니다."
  */
 /**
  * @swagger
@@ -731,6 +773,11 @@ router.get(
   "/admin/users",
   authenticateAdmin,
   asyncHandler(UserController.getAllUsers),
+);
+router.patch(
+  "/admin/users/:userId",
+  authenticateAdmin,
+  asyncHandler(UserController.changeUserRole),
 );
 router.delete(
   "/admin/users",

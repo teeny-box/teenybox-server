@@ -124,11 +124,13 @@ class promotionRepository {
       .exec();
   }
 
-  // userId로 게시글들 조회
-  async findPromotionsByUserIdWithCount(
+  // 특정 user의 게시글 조회 + 갯수 count + 정렬
+  async findPromotionsByUserId(
     userId: string,
     skip: number,
     limit: number,
+    sortBy: string,
+    sortOrder: "asc" | "desc",
   ): Promise<{ promotions: IPromotion[]; totalCount: number }> {
     // 게시글 총 갯수를 가져오는 쿼리
     const totalCount = await PromotionModel.countDocuments({
@@ -136,11 +138,26 @@ class promotionRepository {
       deletedAt: null,
     });
 
+    // 정렬 필드를 기준으로 매핑
+    const sortFieldMapping = {
+      time: "createdAt", // 'time'으로 통합하여 사용
+      view: "views", // 조회순
+      like: "likes", // 추천순
+    };
+
+    // MongoDB 정렬 방향 설정
+    const sortDirection = sortOrder === "asc" ? 1 : -1;
+
+    // 정렬 객체 생성
+    const sortOptions = {};
+    const sortField = sortFieldMapping[sortBy];
+    sortOptions[sortField] = sortDirection;
+
     const promotions = await PromotionModel.find({
       user_id: userId,
       deletedAt: null,
     })
-      .sort({ promotion_number: -1 })
+      .sort(sortOptions)
       .skip(skip)
       .limit(limit)
       .populate("user_id", "nickname profile_url state")
@@ -166,9 +183,26 @@ class promotionRepository {
     query: object,
     skip: number,
     limit: number,
+    sortBy: string,
+    sortOrder: "asc" | "desc",
   ): Promise<{ promotions: IPromotion[]; totalCount: number }> {
+    // 정렬 필드를 기준으로 매핑
+    const sortFieldMapping = {
+      time: "createdAt", // 'time'으로 통합하여 사용
+      view: "views", // 조회순
+      like: "likes", // 추천순
+    };
+
+    // MongoDB 정렬 방향 설정
+    const sortDirection = sortOrder === "asc" ? 1 : -1;
+
+    // 정렬 객체 생성
+    const sortOptions = {};
+    const sortField = sortFieldMapping[sortBy];
+    sortOptions[sortField] = sortDirection;
+
     let promotions = await PromotionModel.find(query)
-      .sort({ promotion_number: -1 })
+      .sort(sortOptions)
       .skip(skip)
       .limit(limit)
       .populate({

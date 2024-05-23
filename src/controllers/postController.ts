@@ -6,7 +6,7 @@ class PostController {
   async createPost(req: AuthRequest, res: Response): Promise<void> {
     // 인증된 사용자의 정보가 있는지 확인합니다.
     if (!req.user) {
-      res.status(401).json({ message: "사용자 인증이 필요합니다." });
+      res.status(402).json({ message: "로그인된 사용자만 가능합니다." });
       return;
     }
 
@@ -21,7 +21,7 @@ class PostController {
   // 게시글 수정
   async updatePost(req: AuthRequest, res: Response): Promise<void> {
     if (!req.user) {
-      res.status(401).json({ message: "사용자 인증이 필요합니다." });
+      res.status(402).json({ message: "로그인된 사용자만 가능합니다." });
       return;
     }
 
@@ -36,6 +36,7 @@ class PostController {
     const limit = Number(req.query.limit || -1);
     const sortBy = String(req.query.sortBy) || "post_number";
     const sortOrder = String(req.query.sortOrder) === "desc" ? "desc" : "asc";
+    const category = String(req.query.category);
     const is_fixed = String(req.query.isFixed);
 
     const posts = await PostService.getAllPosts(
@@ -43,6 +44,7 @@ class PostController {
       limit,
       sortBy,
       sortOrder,
+      category,
       is_fixed,
     );
     res.status(200).json(posts);
@@ -50,9 +52,10 @@ class PostController {
 
   // 게시글 번호로 상세조회
   async getPostByNumber(req: Request, res: Response): Promise<void> {
-    const post = await PostService.findByPostNumber(
-      Number(req.params.postNumber),
-    );
+    const postnumber = Number(req.params.postNumber);
+    const usage = String(req.query.usage) || "not-view";
+
+    const post = await PostService.findByPostNumber(postnumber, usage);
     res.status(200).json(post);
   }
 
@@ -60,10 +63,15 @@ class PostController {
   async getPostsByUserId(req: Request, res: Response): Promise<void> {
     const page = Number(req.query.page || 1);
     const limit = Number(req.query.limit || 0);
+    const sortBy = (req.query.sortBy as string) || "time";
+    const sortOrderParam = req.query.sortOrder as string | undefined;
+    const sortOrder: "asc" | "desc" = sortOrderParam === "asc" ? "asc" : "desc"; // 유효하지 않은 값은 'desc'로 처리
     const { posts, totalCount } = await PostService.findPostsByUserId(
       req.params.userId,
       page,
       limit,
+      sortBy,
+      sortOrder,
     );
 
     res.status(200).json({ posts, totalCount });
@@ -77,6 +85,12 @@ class PostController {
       const page = Number(req.query.page || 1); // 페이지 번호, 기본값은 1
       const limit = Number(req.query.limit || 10); // 페이지 당 항목 수, 기본값은 10
 
+      // 유효한 정렬 기준과 정렬 방향 확인
+      const sortBy = (req.query.sortBy as string) || "time";
+      const sortOrderParam = req.query.sortOrder as string | undefined;
+      const sortOrder: "asc" | "desc" =
+        sortOrderParam === "asc" ? "asc" : "desc"; // 유효하지 않은 값은 'desc'로 처리
+
       // 검색 유형과 검색어가 모두 제공되었는지 확인
       if (!type || !query) {
         res.status(400).json({ message: "타입과 검색어를 입력하세요." });
@@ -89,12 +103,12 @@ class PostController {
         query,
         page,
         limit,
+        sortBy,
+        sortOrder,
       );
 
-      // 검색 결과 반환
       res.status(200).json(searchResults);
     } catch (error) {
-      // 오류 처리
       res.status(500).json({ message: error.message });
     }
   }

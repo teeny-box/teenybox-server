@@ -131,8 +131,26 @@ export default router;
  *                 createdAt: "2024-01-18T03:44:02.952Z"
  *                 updatedAt: "2024-01-18T03:44:02.952Z"
  *                 __v: 0
- *       '400':
+ *       '401':
+ *         description: 사용자 권한 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "사용자 인증이 필요합니다."
+ *       '500':
  *         description: 잘못된 요청
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글 생성에 실패했습니다."
  *
  *   get:
  *     tags:
@@ -152,10 +170,18 @@ export default router;
  *           default: desc
  *           description: asc = 오름차순, desc = 내림차순
  *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *           enum: ["자유", "공지"]
+ *           default: 구분 없음
+ *           description: 일반또는 고정 입력
+ *       - in: query
  *         name: isFixed
  *         schema:
  *           type: string
- *           default: 일반게시글, 고정게시글 구분 없음
+ *           enum: ["일반", "고정"]
+ *           default: 구분 없음
  *           description: 일반또는 고정 입력
  *     responses:
  *       '200':
@@ -167,7 +193,15 @@ export default router;
  *               items:
  *                 $ref: '#/components/schemas/PostResponse'
  *       '404':
- *         description: 게시물을 찾을 수 없음
+ *         description: 게시물 리스트를 조회할 수 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "입력이 잘못되었습니다."
  *
  * /posts/{postNumber}:
  *   put:
@@ -233,10 +267,36 @@ export default router;
  *                 createdAt: "2024-01-18T03:44:02.952Z"
  *                 updatedAt: "2024-01-18T04:00:00.000Z"
  *                 __v: 1
- *       '400':
- *         description: 잘못된 요청
+ *       '401':
+ *         description: 사용자 권한 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글 수정/고정 권한이 없습니다."
+ *       '402':
+ *         description: 로그인 필요
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "로그인된 사용자만 가능합니다."
  *       '404':
- *         description: 게시물을 찾을 수 없음
+ *         description: 게시글을 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글을 찾을 수 없습니다."
  *   get:
  *     tags:
  *       - Post
@@ -248,6 +308,12 @@ export default router;
  *         schema:
  *           type: integer
  *           description: 조회할 게시물 번호
+ *       - in: query
+ *         name: usage
+ *         schema:
+ *           type: string
+ *           default: not-view
+ *           description: 수정을 위해서는 fix 등의 값을 사용. (뭘 넣어도 상관은 없음)
  *     responses:
  *       '200':
  *         description: 게시물 조회 성공
@@ -293,7 +359,15 @@ export default router;
  *                 updatedAt: "2024-01-18T04:00:00.000Z"
  *                 __v: 1
  *       '404':
- *         description: 게시물을 찾을 수 없음
+ *         description: 게시글을 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글을 찾을 수 없습니다."
  *
  *   delete:
  *     tags:
@@ -309,8 +383,26 @@ export default router;
  *     responses:
  *       '200':
  *         description: 게시물 삭제 성공
+ *       '401':
+ *         description: 사용자 권한 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글 삭제 권한이 없습니다."
  *       '404':
- *         description: 게시물을 찾을 수 없음
+ *         description: 게시글을 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글을 찾을 수 없습니다."
  *
  * /posts/bulk:
  *   delete:
@@ -336,16 +428,22 @@ export default router;
  *     responses:
  *       '200':
  *         description: 게시물들이 성공적으로 삭제됨
- *       '400':
- *         description: 잘못된 요청
  *       '401':
- *         description: 인증 실패
+ *         description: 사용자 권한 없음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글 삭제 권한이 없습니다."
  *
  * /posts/user/{userId}:
  *   get:
  *     tags:
  *       - Post
- *     summary: 특정 사용자의 게시물 모두 조회, 이제 totalCounts도 제공
+ *     summary: 특정 사용자의 게시물 모두 조회, 정렬, 총 게시글 갯수 제공
  *     parameters:
  *       - in: path
  *         name: userId
@@ -353,15 +451,51 @@ export default router;
  *         schema:
  *           type: string
  *           description: 조회할 사용자의 ID
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *           description: 조회할 페이지 번호
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *           description: 페이지 당 표시할 게시물 수
+ *       - in: query
+ *         name: sortBy
+ *         required: false
+ *         schema:
+ *           type: string
+ *           default: 'time'
+ *           enum: ['time', 'view', 'like']
+ *           description: 정렬 기준
+ *       - in: query
+ *         name: sortOrder
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *           default: 'desc'
+ *           description: 정렬 순서 (오름차순 'asc' 혹은 내림차순 'desc')
  *     responses:
  *       '200':
  *         description: 사용자의 게시물 목록 조회 성공
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/PostResponse'
+ *               type: object
+ *               properties:
+ *                 posts:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/PostResponse'
+ *                 totalCount:
+ *                   type: integer
+ *                   description: 전체 게시물 수
  *       '404':
  *         description: 사용자를 찾을 수 없음
  *
@@ -376,6 +510,7 @@ export default router;
  *         required: true
  *         schema:
  *           type: string
+ *           enum: ['title', 'tag']
  *         description: 검색할 유형
  *       - in: query
  *         name: query
@@ -395,6 +530,20 @@ export default router;
  *           type: integer
  *           default: 10
  *         description: 페이지당 게시글 수
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           default: 'time'
+ *           enum: ['time', 'view', 'like']
+ *         description: 결과를 정렬할 기준 ('time', 'view', 'like')
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           default: 'desc'
+ *           enum: ['asc', 'desc']
+ *         description: asc - 오름차순, desc - 내림차순
  *     responses:
  *       200:
  *         description: 검색 결과 반환
@@ -409,8 +558,16 @@ export default router;
  *                     tags: ["태그1", "태그2"]
  *                     createdAt: "2023-01-01T00:00:00.000Z"
  *                     updatedAt: "2023-01-01T00:00:00.000Z"
- *       404:
- *         description: 검색 결과를 찾을 수 없음
+ *       '400':
+ *         description: 검색이 제대로 이루어지지 않음
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "타입과 검색어를 입력하세요."
  *
  * /posts/{postNumber}/like:
  *   post:
@@ -448,6 +605,27 @@ export default router;
  *                 message: 게시글이 성공적으로 추천되었습니다.
  *                 post_number: 37
  *                 likes: 10
+ *       '404':
+ *         description: 게시글을 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글을 찾을 수 없습니다."
+ *       '405':
+ *         description: 이미 추천한 게시글
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "이미 추천한 게시글입니다."
+ *
  *   delete:
  *     tags:
  *       - Post
@@ -483,7 +661,26 @@ export default router;
  *                 message: 게시글 추천이 성공적으로 취소되었습니다.
  *                 post_number: 37
  *                 likes: 10
- *
+ *       '404':
+ *         description: 게시글을 찾을 수 없습니다.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "게시글을 찾을 수 없습니다."
+ *       '405':
+ *         description: 추천되지 않은 게시글
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "아직 추천하지 않은 게시글 입니다."
  * components:
  *   schemas:
  *     CreatePostRequest:
@@ -503,6 +700,10 @@ export default router;
  *           items:
  *             type: string
  *           description: 게시글에 사용될 태그 배열
+ *         category:
+ *           type: string
+ *           enum: ["자유", "공지"]
+ *           description: 게시글 카테고리
  *         is_fixed:
  *           type: string
  *           enum: ["일반", "고정"]

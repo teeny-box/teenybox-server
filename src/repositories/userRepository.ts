@@ -1,14 +1,17 @@
 import { UserModel, IUser } from "../models/userModel";
 import { ShowModel } from "../models/showModel";
 import { UserRequestDTO } from "../dtos/userDto";
+import { ROLE } from "../common/enum/user-role.enum";
+import { STATE } from "../common/enum/user-state.enum";
+import { Order } from "../common/enum/order.enum";
 
 class UserRepository {
   // 사용자 생성
   async createUser(userData: UserRequestDTO): Promise<void> {
     const createUserData = {
       ...userData,
-      role: "user",
-      state: "가입",
+      role: ROLE.USER,
+      state: STATE.JOINED,
     };
 
     const existingUser = await UserModel.findOne({ user_id: userData.user_id });
@@ -43,7 +46,7 @@ class UserRepository {
   // 회원정보 삭제 (state '탈퇴'로 변경, 탈퇴일 추가)
   async deleteUser(userId: string): Promise<void> {
     return await UserModel.findByIdAndUpdate(userId, {
-      state: "탈퇴",
+      state: STATE.WITHDRAWN,
       deletedAt: new Date(),
     });
   }
@@ -107,12 +110,16 @@ class UserRepository {
     });
   }
 
-  // 전체 회원 목록 조회(관리자 페이지)
+  /* 관리자 페이지 */
+
+  // 전체 회원 목록 조회
   async getUsers(
     skip: number,
     limit: number,
+    order: Order,
   ): Promise<{ users: IUser[]; totalUsers: number }> {
     const users = await UserModel.find()
+      .sort({ createdAt: order })
       .skip(skip)
       .limit(limit)
       .select(
@@ -123,14 +130,21 @@ class UserRepository {
     return { users, totalUsers };
   }
 
-  // 선택한 회원 탈퇴(관리자 페이지)
+  // 유저 권한 변경
+  async changeUserRole(user: IUser, newRole: ROLE): Promise<void> {
+    await UserModel.findByIdAndUpdate(user._id, {
+      role: newRole,
+    });
+  }
+
+  // 선택한 회원 탈퇴
   async deleteUsers(userIds: string[]): Promise<void> {
     await Promise.all(
       userIds.map(async (userId) => {
         const user = await UserModel.findById(userId);
         if (user) {
           await UserModel.findByIdAndUpdate(userId, {
-            state: "탈퇴",
+            state: STATE.WITHDRAWN,
             deletedAt: new Date(),
           });
         }

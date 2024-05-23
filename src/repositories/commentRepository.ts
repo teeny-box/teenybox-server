@@ -2,7 +2,7 @@ import CommentModel, { IComment } from "../models/commentModel";
 import { CreateCommentDTO, UpdateCommentDTO } from "../dtos/commentDto";
 import NotFoundError from "../common/error/NotFoundError";
 import BadRequestError from "../common/error/BadRequestError";
-import { STATE } from "../common/enum/enum";
+import { STATE } from "../common/enum/user-state.enum";
 
 export class CommentRepository {
   // 댓글 생성
@@ -69,20 +69,42 @@ export class CommentRepository {
     return { comments, totalComments };
   }
 
-  // 사용자 아이디로 모든 댓글 조회 (페이징 추가)
-  async findByUserId(
+  // 사용자 아이디로 모든 댓글 조회 - 커뮤니티 (페이징 추가)
+  async findCommentsOfPostsByUserId(
     userId: string,
     skip: number,
     limit: number,
   ): Promise<{ comments: IComment[]; totalComments: number }> {
     const [comments, totalComments] = await Promise.all([
-      await CommentModel.find({ user: userId })
+      await CommentModel.find({ user: userId, post: { $exists: true } })
         .populate({
           path: "user",
           select: "_id nickname profile_url state",
         })
         .populate({
           path: "post",
+        })
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        .exec(),
+      CommentModel.countDocuments({ user: userId, post: { $exists: true } }),
+    ]);
+
+    return { comments, totalComments };
+  }
+
+  // 사용자 아이디로 모든 댓글 조회 - 홍보 (페이징 추가)
+  async findCommentsOfPromotionsByUserId(
+    userId: string,
+    skip: number,
+    limit: number,
+  ): Promise<{ comments: IComment[]; totalComments: number }> {
+    const [comments, totalComments] = await Promise.all([
+      await CommentModel.find({ user: userId, promotion: { $exists: true } })
+        .populate({
+          path: "user",
+          select: "_id nickname profile_url state",
         })
         .populate({
           path: "promotion",
@@ -91,7 +113,10 @@ export class CommentRepository {
         .limit(limit)
         .sort({ createdAt: -1 })
         .exec(),
-      CommentModel.countDocuments({ user_id: userId }),
+      CommentModel.countDocuments({
+        user: userId,
+        promotion: { $exists: true },
+      }),
     ]);
 
     return { comments, totalComments };

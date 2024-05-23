@@ -4,10 +4,9 @@ import { IPromotion } from "../models/promotionModel";
 import NotFoundError from "../common/error/NotFoundError";
 import InternalServerError from "../common/error/InternalServerError";
 import UnauthorizedError from "../common/error/UnauthorizedError";
-import { UserModel } from "../models/userModel";
-import { IUser } from "../models/userModel";
+import { UserModel, IUser } from "../models/userModel";
 import { FilterQuery } from "mongoose";
-import { ROLE } from "../common/enum/enum";
+import { ROLE } from "../common/enum/user-role.enum";
 import commentService from "./commentService";
 
 class PromotionService {
@@ -33,18 +32,6 @@ class PromotionService {
       const user = await UserModel.findOne({ _id: userId });
       if (!user) {
         throw new NotFoundError("사용자를 찾을 수 없습니다.");
-      }
-
-      if (user.role === "user") {
-        if (
-          promotionData.is_fixed === "고정" ||
-          promotionData.category === "공지"
-        ) {
-          throw new UnauthorizedError(
-            "일반 사용자는 게시글을 공지게시글 및 고정게시글을 작성할 수 없습니다.",
-          );
-        }
-        promotionData.is_fixed = "일반";
       }
 
       // user정보 추가
@@ -82,17 +69,6 @@ class PromotionService {
       throw new UnauthorizedError("게시글 수정 권한이 없습니다.");
     }
 
-    const user = await UserModel.findOne({ _id: userId });
-
-    if (user.role === "user") {
-      if (updateData.is_fixed === "고정") {
-        throw new UnauthorizedError(
-          "일반 사용자는 게시글을 고정할 수 없습니다.",
-        );
-      }
-      updateData.is_fixed = "일반";
-    }
-
     const updatedPromotion = await PromotionRepository.update(
       promotionNumber,
       updateData,
@@ -108,7 +84,6 @@ class PromotionService {
     sortBy: string, // 정렬 기준
     sortOrder: "asc" | "desc", // 정렬 순서
     category: string,
-    is_fixed: string,
   ): Promise<{
     promotions: Array<IPromotion & { commentsCount: number }>;
     totalCount: number;
@@ -116,19 +91,10 @@ class PromotionService {
     const skip = (page - 1) * limit;
     const filter: FilterQuery<IPromotion> = {}; // 필터 타입 지정
 
-    if (
-      category &&
-      (category === "연극" || category === "기타" || category === "공지")
-    ) {
+    if (category && (category === "연극" || category === "기타")) {
       filter.category = category;
     }
-    if (is_fixed && (is_fixed === "고정" || is_fixed === "일반")) {
-      filter.is_fixed = is_fixed;
-      console.log(filter);
-    }
     filter.deletedAt = null;
-
-    // console.log(filter);
 
     return await PromotionRepository.findAll(
       skip,
@@ -140,16 +106,21 @@ class PromotionService {
   }
 
   // 게시글 번호로 조회
-  async findByPromotionNumber(promotionNumber: number): Promise<IPromotion> {
+  async findByPromotionNumber(
+    promotionNumber: number,
+    usage: string,
+  ): Promise<IPromotion> {
     const promotion =
       await PromotionRepository.findByPromotionNumber(promotionNumber);
     if (!promotion || promotion.deletedAt != null) {
       throw new NotFoundError("게시글을 찾을 수 없습니다.");
     }
 
-    // 조회수 증가 로직 추가
-    promotion.views = (promotion.views || 0) + 1;
-    await promotion.save(); // 변경된 조회수 저장
+    if (usage === "view") {
+      // 조회수 증가 로직 추가
+      promotion.views = (promotion.views || 0) + 1;
+      await promotion.save(); // 변경된 조회수 저장
+    }
 
     return promotion;
   }
@@ -159,12 +130,16 @@ class PromotionService {
     userId: string,
     page: number,
     limit: number,
+    sortBy: string, // 정렬 기준
+    sortOrder: "asc" | "desc", // 정렬 순서
   ): Promise<{ promotions: IPromotion[]; totalCount: number }> {
     const skip = (page - 1) * limit;
-    return await PromotionRepository.findPromotionsByUserIdWithCount(
+    return await PromotionRepository.findPromotionsByUserId(
       userId,
       skip,
       limit,
+      sortBy,
+      sortOrder,
     );
   }
 
@@ -202,6 +177,8 @@ class PromotionService {
     query: string,
     page: number,
     limit: number,
+    sortBy: string,
+    sortOrder: "asc" | "desc",
   ): Promise<{ promotions: IPromotion[]; totalCount: number }> {
     const skip = (page - 1) * limit;
 
@@ -229,7 +206,13 @@ class PromotionService {
       throw new Error("잘못된 타입입니다.");
     }
 
-    return await PromotionRepository.findByQuery(searchQuery, skip, limit);
+    return await PromotionRepository.findByQuery(
+      searchQuery,
+      skip,
+      limit,
+      sortBy,
+      sortOrder,
+    );
   }
 
   // 게시글 일괄 삭제

@@ -5,10 +5,7 @@ import {
   IsOptional,
   IsArray,
 } from "class-validator";
-import { SOCIAL } from "../common/enum/enum";
-import { Union } from "../common/enum/CustomUnion";
-
-type Social = Union<typeof SOCIAL>;
+import { SOCIAL } from "../common/enum/user-social-provider.enum";
 
 export class UserRequestDTO {
   @IsString({ message: "고유 아이디는 문자열이어야 합니다." })
@@ -19,7 +16,7 @@ export class UserRequestDTO {
     message: "소셜 정보는 kakao, naver, google 중 하나로 입력되어야 합니다.",
   })
   @IsNotEmpty({ message: "소셜 정보는 반드시 입력되어야 합니다." })
-  social_provider: Social;
+  social_provider: SOCIAL;
 
   @IsString({ message: "닉네임은 문자열이어야 합니다." })
   @IsNotEmpty({ message: "닉네임은 반드시 입력되어야 합니다." })
@@ -41,7 +38,7 @@ export class UserRequestDTO {
 export class UserResponseDTO {
   _id: string;
   user_id: string;
-  social_provider: string;
+  social_provider: SOCIAL;
   nickname: string;
   profile_url: string;
   interested_area: string;

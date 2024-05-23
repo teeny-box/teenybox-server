@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { UserRequestDTO, UserResponseDTO } from "./../dtos/userDto";
 import UserService from "../services/userService";
 import { AuthRequest } from "../middlewares/authUserMiddlewares";
+import { SOCIAL } from "../common/enum/user-social-provider.enum";
+import { Order } from "../common/enum/order.enum";
 
 class UserController {
   async RegisterUser(req: Request, res: Response) {
@@ -36,7 +38,7 @@ class UserController {
       return res.status(302).json({
         message: "회원가입이 필요합니다.",
         kakaoUserData,
-        social_provider: "kakao",
+        social_provider: SOCIAL.KAKAO,
       });
     }
   }
@@ -61,7 +63,7 @@ class UserController {
       return res.status(302).json({
         message: "회원가입이 필요합니다.",
         naverUserData,
-        social_provider: "naver",
+        social_provider: SOCIAL.NAVER,
       });
     }
   }
@@ -86,7 +88,7 @@ class UserController {
       return res.status(302).json({
         message: "회원가입이 필요합니다.",
         googleUserData,
-        social_provider: "google",
+        social_provider: SOCIAL.GOOGLE,
       });
     }
   }
@@ -165,9 +167,23 @@ class UserController {
   }
 
   async getAllUsers(req: Request, res: Response) {
-    const page = req.query.page ? parseInt(req.query.page as string) : 1;
-    const { users, totalUsers } = await UserService.getAllUsers(page);
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+    const order =
+      (req.query.order as Order) === Order.ASC ? Order.ASC : Order.DESC;
+    const { users, totalUsers } = await UserService.getAllUsers(
+      page,
+      limit,
+      order,
+    );
     return res.status(200).json({ users, totalUsers });
+  }
+
+  async changeUserRole(req: Request, res: Response) {
+    const userId = req.params.userId;
+    const { newRole } = req.body;
+    await UserService.changeUserRole(userId, newRole);
+    return res.status(200).json({ message: "유저 권한이 변경되었습니다." });
   }
 
   async deleteUsers(req: Request, res: Response) {

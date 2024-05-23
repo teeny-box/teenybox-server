@@ -1,8 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { SOCIAL } from "../common/enum/user-social-provider.enum";
 
 export interface IUser extends Document {
   user_id: string;
-  social_provider: string;
+  social_provider: SOCIAL;
   nickname: string;
   profile_url: string;
   interested_area: string;

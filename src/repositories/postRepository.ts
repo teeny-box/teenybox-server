@@ -37,7 +37,7 @@ class PostRepository {
     skip: number,
     limit: number,
     sortBy: string,
-    sortOrder: "asc" | "desc", // 추가된 부분: 정렬 순서
+    sortOrder: "asc" | "desc",
     filter: FilterQuery<IPost>,
   ): Promise<{
     posts: Array<
@@ -125,11 +125,13 @@ class PostRepository {
       .exec();
   }
 
-  // userId로 게시글들 조회 + 갯수까지 추가
-  async findPostsByUserIdWithCount(
+  // 특정 user의 게시글 조회 + 갯수 count + 정렬
+  async findPostsByUserId(
     userId: string,
     skip: number,
     limit: number,
+    sortBy: string,
+    sortOrder: "asc" | "desc",
   ): Promise<{ posts: IPost[]; totalCount: number }> {
     // 게시글 총 갯수를 가져오는 쿼리
     const totalCount = await PostModel.countDocuments({
@@ -137,8 +139,23 @@ class PostRepository {
       deletedAt: null,
     });
 
+    // 정렬 필드를 기준으로 매핑
+    const sortFieldMapping = {
+      time: "createdAt", // 'time'으로 통합하여 사용
+      view: "views", // 조회순
+      like: "likes", // 추천순
+    };
+
+    // MongoDB 정렬 방향 설정
+    const sortDirection = sortOrder === "asc" ? 1 : -1;
+
+    // 정렬 객체 생성
+    const sortOptions = {};
+    const sortField = sortFieldMapping[sortBy];
+    sortOptions[sortField] = sortDirection;
+
     const posts = await PostModel.find({ user_id: userId, deletedAt: null })
-      .sort({ post_number: -1 })
+      .sort(sortOptions)
       .skip(skip)
       .limit(limit)
       .populate({
@@ -165,9 +182,26 @@ class PostRepository {
     query: object,
     skip: number,
     limit: number,
+    sortBy: string,
+    sortOrder: "asc" | "desc",
   ): Promise<{ posts: IPost[]; totalCount: number }> {
+    // 정렬 필드를 기준으로 매핑
+    const sortFieldMapping = {
+      time: "createdAt", // 'time'으로 통합하여 사용
+      view: "views", // 조회순
+      like: "likes", // 추천순
+    };
+
+    // MongoDB 정렬 방향 설정
+    const sortDirection = sortOrder === "asc" ? 1 : -1;
+
+    // 정렬 객체 생성
+    const sortOptions = {};
+    const sortField = sortFieldMapping[sortBy];
+    sortOptions[sortField] = sortDirection;
+
     let posts = await PostModel.find(query)
-      .sort({ post_number: -1 })
+      .sort(sortOptions)
       .skip(skip)
       .limit(limit)
       .populate({

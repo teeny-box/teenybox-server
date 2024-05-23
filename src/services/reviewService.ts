@@ -10,7 +10,7 @@ import NotFoundError from "../common/error/NotFoundError";
 import { IShow } from "../models/showModel";
 import ConflictError from "../common/error/ConflictError";
 import { Schema } from "mongoose";
-import { ROLE } from "../common/enum/enum";
+import { ROLE } from "../common/enum/user-role.enum";
 
 class reviewService {
   async create(
