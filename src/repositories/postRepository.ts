@@ -3,6 +3,8 @@ import { CreatePostDTO, UpdatePostDTO } from "../dtos/postDto";
 import { FilterQuery } from "mongoose";
 
 class PostRepository {
+  private isMigrationDone = false;
+
   // 게시글 생성
   async create(postData: CreatePostDTO): Promise<IPost> {
     // 최신 게시글의 post_number 조회
@@ -48,6 +50,11 @@ class PostRepository {
     >;
     totalCount: number;
   }> {
+    if (!this.isMigrationDone) {
+      // await this.migrateCategoryField();
+      this.isMigrationDone = true;
+    }
+
     const totalCount = await PostModel.countDocuments(filter);
 
     let sortStage;
@@ -117,6 +124,27 @@ class PostRepository {
 
     return { posts, totalCount };
   }
+
+  // 카테고리 필드 마이그레이션 메서드
+  // private async migrateCategoryField(): Promise<void> {
+  //   try {
+  //     // 모든 게시물 중 category 필드가 없는 게시물에 기본값 "자유" 추가
+  //     await PostModel.updateMany(
+  //       { category: { $exists: false } },
+  //       { $set: { category: "자유" } },
+  //     );
+
+  //     // 모든 게시물 중 is_fixed 필드가 없는 게시물에 기본값 "일반" 추가
+  //     await PostModel.updateMany(
+  //       { is_fixed: { $exists: false } },
+  //       { $set: { is_fixed: "일반" } },
+  //     );
+
+  //     console.log("Migration completed successfully");
+  //   } catch (error) {
+  //     console.error(`Migration failed: ${error.message}`);
+  //   }
+  // }
 
   // 게시글 번호로 조회
   async findByPostNumber(postNumber: number): Promise<IPost | null> {
