@@ -47,6 +47,8 @@ class promotionRepository {
     promotions: Array<IPromotion & { commentsCount: number }>;
     totalCount: number;
   }> {
+    // await this.migrateCategoryField();
+
     const totalCount = await PromotionModel.countDocuments(filter);
 
     // 정렬 필드를 기준으로 매핑
@@ -253,6 +255,21 @@ class promotionRepository {
       updateQuery,
     ).exec();
   }
+
+  // 카테고리 필드 마이그레이션 메서드
+  // private async migrateCategoryField(): Promise<void> {
+  //   try {
+  //     // 모든 게시물 중 category 필드가 "공지"인 게시글들을 "기타"로 변경
+  //     await PromotionModel.updateMany(
+  //       { category: "공지" },
+  //       { $set: { category: "기타" } },
+  //     );
+
+  //     console.log("Migration completed successfully");
+  //   } catch (error) {
+  //     console.error(`Migration failed: ${error.message}`);
+  //   }
+  // }
 }
 
 export default new promotionRepository();
