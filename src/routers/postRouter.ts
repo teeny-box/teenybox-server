@@ -161,12 +161,14 @@ export default router;
  *         name: sortBy
  *         schema:
  *           type: string
- *           default: post_number
+ *           enum: ["time", "view", "like"]
+ *           default: time
  *           description: 정렬 기준
  *       - in: query
  *         name: sortOrder
  *         schema:
  *           type: string
+ *           enum: ["desc", "asc"]
  *           default: desc
  *           description: asc = 오름차순, desc = 내림차순
  *       - in: query
