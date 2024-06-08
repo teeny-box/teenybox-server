@@ -74,6 +74,7 @@ class UserRepository {
           location: show.location,
           startDate: show.start_date,
           endDate: show.end_date,
+          price: show.price,
           state: show.state,
         });
       } else {
