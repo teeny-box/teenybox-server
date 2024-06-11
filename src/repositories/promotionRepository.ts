@@ -47,16 +47,24 @@ class promotionRepository {
     promotions: Array<IPromotion & { commentsCount: number }>;
     totalCount: number;
   }> {
+    // await this.migrateCategoryField();
+
     const totalCount = await PromotionModel.countDocuments(filter);
 
-    let sortStage;
-    if (sortBy !== "promotion_number") {
-      sortStage = {
-        $sort: { [sortBy]: sortOrder === "asc" ? 1 : -1, promotion_number: -1 },
-      };
-    } else {
-      sortStage = { $sort: { [sortBy]: sortOrder === "asc" ? 1 : -1 } };
-    }
+    // 정렬 필드를 기준으로 매핑
+    const sortFieldMapping = {
+      time: "createdAt", // 'time'으로 통합하여 사용
+      view: "views", // 조회순
+      like: "likes", // 추천순
+    };
+
+    // MongoDB 정렬 방향 설정
+    const sortDirection = sortOrder === "asc" ? 1 : -1;
+
+    // 정렬 객체 생성
+    const sortOptions = {};
+    const sortField = sortFieldMapping[sortBy];
+    sortOptions[sortField] = sortDirection;
 
     const aggregationResult = await PromotionModel.aggregate([
       {
@@ -97,7 +105,7 @@ class promotionRepository {
         },
       },
       { $match: filter },
-      sortStage,
+      { $sort: sortOptions },
       { $skip: skip },
       { $limit: limit === -1 ? Number.MAX_SAFE_INTEGER : limit }, // limit이 -1이면 모든 문서를 반환하도록 설정
     ]).exec();
@@ -247,6 +255,21 @@ class promotionRepository {
       updateQuery,
     ).exec();
   }
+
+  // 카테고리 필드 마이그레이션 메서드
+  // private async migrateCategoryField(): Promise<void> {
+  //   try {
+  //     // 모든 게시물 중 category 필드가 "공지"인 게시글들을 "기타"로 변경
+  //     await PromotionModel.updateMany(
+  //       { category: "공지" },
+  //       { $set: { category: "기타" } },
+  //     );
+
+  //     console.log("Migration completed successfully");
+  //   } catch (error) {
+  //     console.error(`Migration failed: ${error.message}`);
+  //   }
+  // }
 }
 
 export default new promotionRepository();
