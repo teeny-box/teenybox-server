@@ -209,6 +209,11 @@ class promotionRepository {
     const sortField = sortFieldMapping[sortBy];
     sortOptions[sortField] = sortDirection;
 
+    // 기본 정렬이 같을 경우 createdAt으로 추가 정렬
+    if (sortField !== "createdAt") {
+      sortOptions["createdAt"] = -1; // 최신순
+    }
+
     let promotions = await PromotionModel.find(query)
       .sort(sortOptions)
       .skip(skip)
