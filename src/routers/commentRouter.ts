@@ -307,6 +307,13 @@ const router = express.Router();
  *         description: |
  *           한 페이지에 표시할 댓글 수 (기본값: 20)
  *         example: 20
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         description: |
+ *           정렬 순서 (기본값: desc)
  *     responses:
  *       '200':
  *         description: 성공적으로 댓글을 가져왔을 때 반환되는 응답
@@ -381,6 +388,13 @@ const router = express.Router();
  *         description: |
  *           한 페이지에 표시할 댓글 수 (기본값: 20)
  *         example: 20
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         description: |
+ *           정렬 순서 (기본값: desc)
  *     responses:
  *       '200':
  *         description: 성공적으로 댓글을 가져왔을 때 반환되는 응답

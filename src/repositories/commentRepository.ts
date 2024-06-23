@@ -3,6 +3,7 @@ import { CreateCommentDTO, UpdateCommentDTO } from "../dtos/commentDto";
 import NotFoundError from "../common/error/NotFoundError";
 import BadRequestError from "../common/error/BadRequestError";
 import { STATE } from "../common/enum/user-state.enum";
+import { Order } from "../common/enum/order.enum";
 
 export class CommentRepository {
   // 댓글 생성
@@ -74,6 +75,7 @@ export class CommentRepository {
     userId: string,
     skip: number,
     limit: number,
+    order: Order,
   ): Promise<{ comments: IComment[]; totalComments: number }> {
     const [comments, totalComments] = await Promise.all([
       await CommentModel.find({ user: userId, post: { $exists: true } })
@@ -86,7 +88,7 @@ export class CommentRepository {
         })
         .skip(skip)
         .limit(limit)
-        .sort({ createdAt: -1 })
+        .sort({ createdAt: order })
         .exec(),
       CommentModel.countDocuments({ user: userId, post: { $exists: true } }),
     ]);
@@ -99,6 +101,7 @@ export class CommentRepository {
     userId: string,
     skip: number,
     limit: number,
+    order: Order,
   ): Promise<{ comments: IComment[]; totalComments: number }> {
     const [comments, totalComments] = await Promise.all([
       await CommentModel.find({ user: userId, promotion: { $exists: true } })
@@ -111,7 +114,7 @@ export class CommentRepository {
         })
         .skip(skip)
         .limit(limit)
-        .sort({ createdAt: -1 })
+        .sort({ createdAt: order })
         .exec(),
       CommentModel.countDocuments({
         user: userId,

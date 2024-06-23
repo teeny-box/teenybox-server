@@ -6,6 +6,7 @@ import NotFoundError from "../common/error/NotFoundError";
 import InternalServerError from "../common/error/InternalServerError";
 import userService from "./userService";
 import BadRequestError from "../common/error/BadRequestError";
+import { Order } from "../common/enum/order.enum";
 
 class CommentService {
   // 댓글 생성
@@ -77,11 +78,12 @@ class CommentService {
     }
   }
 
-  // 사용자 ID에 따른 댓글 조회 (페이징 처리 추가)
+  // 특정 사용자가 작성한 모든 댓글 조회 - 커뮤니티 (페이징 처리 추가)
   async getCommentsOfPostsByUserId(
     userId: string,
     page: number,
     pageSize: number,
+    order: Order,
   ) {
     try {
       const skip = (page - 1) * pageSize;
@@ -89,6 +91,7 @@ class CommentService {
         userId,
         skip,
         pageSize,
+        order,
       );
     } catch (error) {
       throw new InternalServerError(
@@ -97,11 +100,12 @@ class CommentService {
     }
   }
 
-  // 사용자 ID에 따른 댓글 조회 (페이징 처리 추가)
+  // 특정 사용자가 작성한 모든 댓글 조회 - 홍보 (페이징 처리 추가)
   async getCommentsOfPromotionsByUserId(
     userId: string,
     page: number,
     pageSize: number,
+    order: Order,
   ) {
     try {
       const skip = (page - 1) * pageSize;
@@ -109,6 +113,7 @@ class CommentService {
         userId,
         skip,
         pageSize,
+        order,
       );
     } catch (error) {
       throw new InternalServerError(
