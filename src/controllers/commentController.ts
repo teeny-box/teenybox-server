@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import CommentService from "../services/commentService";
 import { AuthRequest } from "../middlewares/authUserMiddlewares";
+import { Order } from "../common/enum/order.enum";
 
 class CommentController {
   // 댓글 생성
@@ -52,11 +53,14 @@ class CommentController {
     const userId = req.user._id;
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 20;
+    const order =
+      (req.query.order as Order) === Order.ASC ? Order.ASC : Order.DESC;
 
     const comments = await CommentService.getCommentsOfPostsByUserId(
       userId,
       page,
       limit,
+      order,
     );
     res.status(200).json(comments);
   }
@@ -69,11 +73,14 @@ class CommentController {
     const userId = req.user._id;
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 20;
+    const order =
+      (req.query.order as Order) === Order.ASC ? Order.ASC : Order.DESC;
 
     const comments = await CommentService.getCommentsOfPromotionsByUserId(
       userId,
       page,
       limit,
+      order,
     );
     res.status(200).json(comments);
   }
